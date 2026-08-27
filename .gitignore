@@ -6,6 +6,7 @@ __pycache__/
 backend/.env
 node_modules/
 dist/
+.next/
 .DS_Store
 *.joblib
 .pytest_cache/
