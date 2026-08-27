@@ -1,8 +1,11 @@
 .venv/
+backend/.venv/
 __pycache__/
 *.pyc
 .env
+backend/.env
 node_modules/
 dist/
 .DS_Store
 *.joblib
+.pytest_cache/
