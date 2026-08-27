@@ -6,6 +6,7 @@ import data_service
 import gemini_service
 import model_service
 from schemas import (
+    ForecastDay,
     ForecastResponse,
     HealthResponse,
     Indicators,
@@ -19,7 +20,12 @@ app = FastAPI(title="MosquitoWatch NYC")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -74,23 +80,36 @@ def predict(request: PredictionRequest) -> PredictionResponse:
     metadata = data_service.get_zip_metadata(request.zip_code)
     history = data_service.get_history(request.zip_code)
     model_result = model_service.predict_zip(request.zip_code)
+    period = data_service.get_forecast_period()
     feature_week = int(features["week_of_year"])
     previous_1, previous_2, previous_4 = _history_indicators(history, feature_week)
+    risk_score = float(model_result["risk_score"])
+    risk_level = str(model_result["risk_level"])
+    forecast_week = int(period["forecast_week"])
+    forecast_year = int(period["forecast_year"])
+    seasonality = data_service.seasonality_label(forecast_week)
     prediction = PredictionResponse(
         zip_code=request.zip_code,
         borough=str(metadata["borough"]),
         areas=str(metadata["areas"]),
-        forecast_week=feature_week + 1,
-        risk_score=float(model_result["risk_score"]),
-        risk_level=str(model_result["risk_level"]),
+        forecast_week=forecast_week,
+        forecast_year=forecast_year,
+        risk_score=risk_score,
+        risk_level=risk_level,
         indicators=Indicators(
             positive_prev_week=previous_1,
             positive_prev_2_weeks=previous_2,
             positive_prev_4_weeks=previous_4,
             temperature=float(features["temp_mean"]),
             rainfall=float(features["precip_sum"]),
-            seasonality=None,
+            seasonality=seasonality,
         ),
+        next_7_days=[
+            ForecastDay(**day)
+            for day in data_service.next_7_days(
+                forecast_year, forecast_week, risk_score, risk_level
+            )
+        ],
         explanation=gemini_service.FALLBACK_EXPLANATION,
     )
 
@@ -113,7 +132,15 @@ def predict(request: PredictionRequest) -> PredictionResponse:
 
 @app.get("/forecasts", response_model=list[ForecastResponse])
 def forecasts() -> list[ForecastResponse]:
-    return [ForecastResponse(**item) for item in model_service.predict_all()]
+    period = data_service.get_forecast_period()
+    return [
+        ForecastResponse(
+            **item,
+            forecast_week=int(period["forecast_week"]),
+            forecast_year=int(period["forecast_year"]),
+        )
+        for item in model_service.predict_all()
+    ]
 
 
 @app.get("/trends/{zip_code}", response_model=TrendsResponse)

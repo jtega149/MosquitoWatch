@@ -39,6 +39,15 @@ def patch_prediction_services(monkeypatch) -> None:
         "app.model_service.predict_zip",
         lambda _zip: {"risk_score": 33.0, "risk_level": "Moderate"},
     )
+    monkeypatch.setattr(
+        "app.data_service.get_forecast_period",
+        lambda: {
+            "feature_week": 33,
+            "feature_year": 2026,
+            "forecast_week": 34,
+            "forecast_year": 2026,
+        },
+    )
 
 
 def test_health_returns_ok() -> None:
@@ -57,6 +66,18 @@ def test_cors_allows_vite_development_origin() -> None:
     )
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+
+def test_cors_allows_next_development_origin() -> None:
+    response = client.options(
+        "/health",
+        headers={
+            "Origin": "http://localhost:3000",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:3000"
 
 
 def test_zips_returns_only_public_metadata_with_string_zip(monkeypatch) -> None:
@@ -85,11 +106,14 @@ def test_predict_maps_real_services_and_prior_history(monkeypatch) -> None:
     monkeypatch.setattr("app.gemini_service.generate_explanation", gemini)
     response = client.post("/predict", json={"zip_code": "10310"})
     assert response.status_code == 200
-    assert response.json() == {
+    body = response.json()
+    days = data_service.next_7_days(2026, 34, 33.0, "Moderate")
+    assert body == {
         "zip_code": "10310",
         "borough": "Staten Island",
         "areas": "Port Richmond, West Brighton",
         "forecast_week": 34,
+        "forecast_year": 2026,
         "risk_score": 33.0,
         "risk_level": "Moderate",
         "indicators": {
@@ -98,8 +122,9 @@ def test_predict_maps_real_services_and_prior_history(monkeypatch) -> None:
             "positive_prev_4_weeks": 10,
             "temperature": 23.8,
             "rainfall": 61.4,
-            "seasonality": None,
+            "seasonality": "Peak mosquito season (Jun–Sep)",
         },
+        "next_7_days": days,
         "explanation": "Model result explained without changing it.",
     }
     gemini.assert_called_once_with(
@@ -111,7 +136,7 @@ def test_predict_maps_real_services_and_prior_history(monkeypatch) -> None:
         positive_prev_4_weeks=10,
         temperature=23.8,
         rainfall=61.4,
-        seasonality=None,
+        seasonality="Peak mosquito season (Jun–Sep)",
     )
 
 
@@ -160,11 +185,35 @@ def test_forecasts_returns_model_output_without_calling_gemini(monkeypatch) -> N
         {"zip_code": "10001", "risk_score": 2.6, "risk_level": "Low"},
     ]
     monkeypatch.setattr("app.model_service.predict_all", lambda: predictions)
+    monkeypatch.setattr(
+        "app.data_service.get_forecast_period",
+        lambda: {
+            "feature_week": 33,
+            "feature_year": 2026,
+            "forecast_week": 34,
+            "forecast_year": 2026,
+        },
+    )
     gemini = Mock()
     monkeypatch.setattr("app.gemini_service.generate_explanation", gemini)
     response = client.get("/forecasts")
     assert response.status_code == 200
-    assert response.json() == predictions
+    assert response.json() == [
+        {
+            "zip_code": "10310",
+            "forecast_week": 34,
+            "forecast_year": 2026,
+            "risk_score": 33.0,
+            "risk_level": "Moderate",
+        },
+        {
+            "zip_code": "10001",
+            "forecast_week": 34,
+            "forecast_year": 2026,
+            "risk_score": 2.6,
+            "risk_level": "Low",
+        },
+    ]
     gemini.assert_not_called()
 
 

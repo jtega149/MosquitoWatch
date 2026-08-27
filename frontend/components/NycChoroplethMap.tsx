@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { GeoJSON, MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { Layer, PathOptions } from "leaflet";
-import { getZipData, riskColor } from "@/lib/mock-data";
-import { useForecastWeek } from "@/lib/forecast-context";
+import { ApiError, type ApiPrediction } from "@/lib/api";
+import { useForecastData } from "@/lib/forecast-context";
+import { parseRiskLevel, riskColor } from "@/lib/risk";
 import { RiskBadge } from "./RiskBadge";
-import type { ZipForecast } from "@/lib/types";
+import { SevenDayForecast } from "./SevenDayForecast";
 
 type ZipProps = { MODZCTA: string; label?: string };
 
@@ -42,9 +43,21 @@ function FitNyc() {
 }
 
 export function NycChoroplethMap() {
-  const { week } = useForecastWeek();
+  const {
+    status,
+    error,
+    forecastsByZip,
+    getZip,
+    getForecast,
+    loadPrediction,
+    forecastWeek,
+    reload,
+  } = useForecastData();
   const [geo, setGeo] = useState<FeatureCollection<Geometry, ZipProps> | null>(null);
   const [selectedZip, setSelectedZip] = useState(DEFAULT_SELECTED);
+  const [detail, setDetail] = useState<ApiPrediction | null>(null);
+  const [failedZip, setFailedZip] = useState<string | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/nyc-modzcta.geo.json")
@@ -53,17 +66,37 @@ export function NycChoroplethMap() {
       .catch(() => setGeo(null));
   }, []);
 
-  const selected: ZipForecast | undefined = useMemo(
-    () => getZipData(selectedZip, week),
-    [selectedZip, week],
-  );
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadPrediction(selectedZip)
+      .then((prediction) => {
+        if (cancelled) return;
+        setDetail(prediction);
+        setFailedZip(null);
+        setDetailError(null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setFailedZip(selectedZip);
+        if (err instanceof ApiError && err.status === 404) {
+          setDetailError("No forecast for this ZIP in the model.");
+        } else {
+          setDetailError(err instanceof Error ? err.message : "Could not load forecast.");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedZip, loadPrediction]);
 
   const styleFor = (feature?: Feature<Geometry, ZipProps>): PathOptions => {
     const zip = feature ? zipFromFeature(feature) : "";
-    const data = zip ? getZipData(zip, week) : undefined;
+    const data = zip ? getForecast(zip) : undefined;
     const isSelected = zip === selectedZip;
     return {
-      fillColor: data ? riskColor(data.riskScore) : "#1e293b",
+      fillColor: data ? riskColor(data.risk_score) : "#1e293b",
       fillOpacity: data ? 0.78 : 0.25,
       color: isSelected ? "#ffffff" : "#0a0e1a",
       weight: isSelected ? 2.4 : 0.6,
@@ -83,8 +116,26 @@ export function NycChoroplethMap() {
     });
   };
 
+  const meta = getZip(selectedZip);
+  const mapForecast = getForecast(selectedZip);
+  const activeDetail = detail?.zip_code === selectedZip ? detail : null;
+  const waiting = !activeDetail && failedZip !== selectedZip;
+  const level = activeDetail
+    ? parseRiskLevel(activeDetail.risk_level, activeDetail.risk_score)
+    : mapForecast
+      ? parseRiskLevel(mapForecast.risk_level, mapForecast.risk_score)
+      : null;
+
   return (
     <div className="relative h-full min-h-[560px] overflow-hidden rounded-2xl border border-white/10">
+      {status === "error" && (
+        <div className="absolute inset-x-4 top-4 z-[1100] rounded-xl border border-red-500/30 bg-[#131a2b]/95 p-3 text-sm text-red-300">
+          {error}{" "}
+          <button type="button" className="underline" onClick={reload}>
+            Retry
+          </button>
+        </div>
+      )}
       {geo ? (
         <MapContainer
           center={NYC_CENTER}
@@ -100,7 +151,7 @@ export function NycChoroplethMap() {
           <ZoomControl position="topleft" />
           <FitNyc />
           <GeoJSON
-            key={`${week}-${selectedZip}`}
+            key={`${forecastsByZip.size}-${selectedZip}-${status}`}
             data={geo}
             style={styleFor}
             onEachFeature={onEachFeature}
@@ -126,29 +177,56 @@ export function NycChoroplethMap() {
         </ul>
       </div>
 
-      {selected && (
-        <div className="absolute bottom-4 right-4 z-[1000] w-80 rounded-xl border border-white/10 bg-[#131a2b]/95 p-4 shadow-2xl backdrop-blur">
-          <div className="text-sm font-semibold text-white">ZIP {selected.zip}</div>
-          <div className="mt-0.5 text-xs text-slate-400">
-            {selected.neighborhood}
-          </div>
-          <div className="mt-3 flex items-center justify-between">
-            <div>
-              <div className="text-xs text-slate-500">Risk</div>
-              <div className="text-2xl font-semibold" style={{ color: riskColor(selected.riskLevel) }}>
-                {selected.riskScore}%
-              </div>
-            </div>
-            <RiskBadge level={selected.riskLevel} size="md" />
-          </div>
-          <Link
-            href={`/zip-lookup?zip=${selected.zip}`}
-            className="mt-3 inline-flex text-sm font-medium text-[#4ade80] hover:underline"
-          >
-            View Details →
-          </Link>
+      <div className="absolute bottom-4 right-4 z-[1000] max-h-[70%] w-80 overflow-y-auto rounded-xl border border-white/10 bg-[#131a2b]/95 p-4 shadow-2xl backdrop-blur">
+        <div className="text-sm font-semibold text-white">ZIP {selectedZip}</div>
+        <div className="mt-0.5 text-xs text-slate-400">
+          {activeDetail?.areas ?? meta?.areas ?? "New York City"}
         </div>
-      )}
+        <div className="text-[11px] text-slate-500">{activeDetail?.borough ?? meta?.borough}</div>
+
+        {waiting && (
+          <p className="mt-3 text-xs text-slate-400">Loading 7-day West Nile forecast…</p>
+        )}
+        {failedZip === selectedZip && detailError && (
+          <p className="mt-3 text-xs text-red-400">{detailError}</p>
+        )}
+
+        {(activeDetail || mapForecast) && level && (
+          <>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <div className="text-xs text-slate-500">Next 7 days</div>
+                <div className="text-2xl font-semibold" style={{ color: riskColor(level) }}>
+                  {(activeDetail?.risk_score ?? mapForecast?.risk_score)}%
+                </div>
+              </div>
+              <RiskBadge level={level} size="md" />
+            </div>
+            {activeDetail && (
+              <div className="mt-3">
+                <SevenDayForecast days={activeDetail.next_7_days} />
+              </div>
+            )}
+            {activeDetail?.explanation && (
+              <p className="mt-3 text-[11px] leading-relaxed text-slate-400">{activeDetail.explanation}</p>
+            )}
+          </>
+        )}
+
+        {!waiting && !activeDetail && !mapForecast && failedZip !== selectedZip && (
+          <p className="mt-3 text-xs text-slate-400">Select a ZIP to see the next-7-day forecast.</p>
+        )}
+
+        <Link
+          href={`/zip-lookup?zip=${selectedZip}`}
+          className="mt-3 inline-flex text-sm font-medium text-[#4ade80] hover:underline"
+        >
+          View Details →
+        </Link>
+        {forecastWeek != null && (
+          <p className="mt-2 text-[10px] text-slate-600">Surveillance forecast week {forecastWeek}</p>
+        )}
+      </div>
     </div>
   );
 }

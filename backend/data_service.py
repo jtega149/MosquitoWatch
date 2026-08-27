@@ -17,6 +17,7 @@ Design notes:
 from __future__ import annotations
 
 import os
+from datetime import date, timedelta
 from functools import lru_cache
 
 import pandas as pd
@@ -155,3 +156,47 @@ def get_history(zip_code: str) -> list[dict]:
     if rows.empty:
         raise ZipNotFoundError(f"No history found for ZIP {zip_code}")
     return rows[["year", "week", "positive_detections"]].to_dict("records")
+
+
+def get_forecast_period() -> dict:
+    """Return the feature week and the next ISO week the model is forecasting."""
+
+    features = _load_latest_features()
+    if features.empty:
+        raise DataServiceError("latest_features.csv contains no ZIP rows")
+    feature_week = int(features.iloc[0]["week_of_year"])
+    history = _load_history()
+    feature_year = int(history["year"].max()) if not history.empty else date.today().year
+    feature_monday = date.fromisocalendar(feature_year, feature_week, 1)
+    forecast_monday = feature_monday + timedelta(days=7)
+    iso = forecast_monday.isocalendar()
+    return {
+        "feature_week": feature_week,
+        "feature_year": feature_year,
+        "forecast_week": int(iso.week),
+        "forecast_year": int(iso.year),
+    }
+
+
+def seasonality_label(week: int) -> str:
+    """Plain-language mosquito-season label from an ISO week number."""
+
+    if 22 <= week <= 36:
+        return "Peak mosquito season (Jun–Sep)"
+    if 18 <= week <= 43:
+        return "Mosquito season (May–Oct)"
+    return "Off-season"
+
+
+def next_7_days(year: int, week: int, risk_score: float, risk_level: str) -> list[dict]:
+    """Expand the weekly forecast across the seven ISO-week dates."""
+
+    monday = date.fromisocalendar(year, week, 1)
+    return [
+        {
+            "date": (monday + timedelta(days=offset)).isoformat(),
+            "risk_score": risk_score,
+            "risk_level": risk_level,
+        }
+        for offset in range(7)
+    ]

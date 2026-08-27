@@ -3,39 +3,97 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
-import { DEFAULT_ZIP, getZipData, riskColor, searchZips } from "@/lib/mock-data";
-import { useForecastWeek } from "@/lib/forecast-context";
+import { ApiError, type ApiPrediction, type ApiTrendPoint, type ApiZip } from "@/lib/api";
+import { DEFAULT_ZIP, useForecastData } from "@/lib/forecast-context";
+import { formatWeekRange } from "@/lib/dates";
+import {
+  countSeverity,
+  parseRiskLevel,
+  rainfallSeverity,
+  riskColor,
+  seasonalityFromWeek,
+  temperatureSeverity,
+} from "@/lib/risk";
 import { RiskBadge } from "@/components/RiskBadge";
 import { DetectionsBarChart } from "@/components/charts/DetectionsBarChart";
-import type { ZipForecast } from "@/lib/types";
+import { SevenDayForecast } from "@/components/SevenDayForecast";
+import type { WeekPoint } from "@/lib/types";
 
-function ZipResults({ data }: { data: ZipForecast }) {
-  const lastSix = data.weeklyHistory.filter((w) => w.week >= 27 && w.week <= 32);
-  const chartData = lastSix.length ? lastSix : data.weeklyHistory.slice(-6);
+function searchZips(zips: ApiZip[], query: string): ApiZip[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return zips
+    .filter(
+      (z) =>
+        z.zip_code.includes(q) ||
+        z.areas.toLowerCase().includes(q) ||
+        z.borough.toLowerCase().includes(q),
+    )
+    .slice(0, 8);
+}
+
+function historyToPoints(history: ApiTrendPoint[]): WeekPoint[] {
+  return history.map((row) => ({
+    week: row.week,
+    label: `${row.year} W${row.week}`,
+    weekStart: null,
+    risk: 0,
+    positiveCount: row.positive_detections,
+  }));
+}
+
+function ZipResults({
+  prediction,
+  history,
+}: {
+  prediction: ApiPrediction;
+  history: ApiTrendPoint[];
+}) {
+  const chartData = historyToPoints(history.slice(-6));
+  const season = seasonalityFromWeek(prediction.forecast_week);
   const factors = [
-    { label: "Recent Positive Detections", ...data.indicators.recentPositiveDetections },
-    { label: "Temperature (Last 7 Days)", ...data.indicators.temperature },
-    { label: "Rainfall (Last 7 Days)", ...data.indicators.rainfall },
-    { label: "Seasonality", ...data.indicators.seasonality },
+    {
+      label: "Recent Positive Detections",
+      value: `${prediction.indicators.positive_prev_week} last week · ${prediction.indicators.positive_prev_4_weeks} in 4 weeks`,
+      severity: countSeverity(prediction.indicators.positive_prev_week),
+    },
+    {
+      label: "Temperature (feature week)",
+      value: `${prediction.indicators.temperature.toFixed(1)}°C`,
+      severity: temperatureSeverity(prediction.indicators.temperature),
+    },
+    {
+      label: "Rainfall (feature week)",
+      value: `${prediction.indicators.rainfall.toFixed(1)} mm`,
+      severity: rainfallSeverity(prediction.indicators.rainfall),
+    },
+    {
+      label: "Seasonality",
+      value: prediction.indicators.seasonality ?? season.value,
+      severity: season.severity,
+    },
   ];
+  const level = parseRiskLevel(prediction.risk_level, prediction.risk_score);
 
   return (
     <div className="grid gap-4 xl:grid-cols-2">
       <section className="rounded-2xl border border-white/10 bg-[#131a2b] p-6">
         <div className="text-xs uppercase tracking-wider text-slate-500">ZIP</div>
-        <h2 className="mt-1 text-3xl font-semibold text-white">{data.zip}</h2>
-        <p className="mt-1 text-slate-300">{data.neighborhood}</p>
-        <p className="text-sm text-slate-500">{data.borough}</p>
+        <h2 className="mt-1 text-3xl font-semibold text-white">{prediction.zip_code}</h2>
+        <p className="mt-1 text-slate-300">{prediction.areas}</p>
+        <p className="text-sm text-slate-500">{prediction.borough}</p>
         <div className="mt-6 flex items-end justify-between gap-4">
           <div>
-            <div className="text-xs text-slate-500">Forecast risk</div>
-            <div className="text-5xl font-semibold" style={{ color: riskColor(data.riskLevel) }}>
-              {data.riskScore}%
+            <div className="text-xs text-slate-500">Next 7 days</div>
+            <div className="text-5xl font-semibold" style={{ color: riskColor(level) }}>
+              {prediction.risk_score}%
             </div>
           </div>
-          <RiskBadge level={data.riskLevel} size="lg" />
+          <RiskBadge level={level} size="lg" />
         </div>
-        <p className="mt-4 text-sm text-slate-400">{data.forecastRange}</p>
+        <p className="mt-4 text-sm text-slate-400">
+          Week {prediction.forecast_week} · {formatWeekRange(prediction.forecast_year, prediction.forecast_week)}
+        </p>
       </section>
 
       <section className="rounded-2xl border border-white/10 bg-[#131a2b] p-6">
@@ -57,20 +115,25 @@ function ZipResults({ data }: { data: ZipForecast }) {
       </section>
 
       <section className="rounded-2xl border border-white/10 bg-[#131a2b] p-6">
+        <SevenDayForecast days={prediction.next_7_days} />
+      </section>
+
+      <section className="rounded-2xl border border-white/10 bg-[#131a2b] p-6">
         <h3 className="text-sm font-semibold text-white">Recent Positive Detections</h3>
         <div className="mt-4 h-52">
-          <DetectionsBarChart data={chartData} />
+          {chartData.length ? (
+            <DetectionsBarChart data={chartData} />
+          ) : (
+            <p className="text-sm text-slate-400">No detection history for this ZIP.</p>
+          )}
         </div>
       </section>
 
-      <section className="rounded-2xl border border-[#22c55e]/25 bg-[#22c55e]/8 p-6">
+      <section className="rounded-2xl border border-[#22c55e]/25 bg-[#22c55e]/8 p-6 xl:col-span-2">
         <div className="text-xs font-semibold uppercase tracking-wider text-[#4ade80]">
           Generated by Gemini
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-slate-200">{data.aiInsight}</p>
-        <p className="mt-3 text-[11px] text-slate-500">
-          Mock explanation for demo — not calling the Gemini API yet.
-        </p>
+        <p className="mt-3 text-sm leading-relaxed text-slate-200">{prediction.explanation}</p>
       </section>
     </div>
   );
@@ -78,43 +141,72 @@ function ZipResults({ data }: { data: ZipForecast }) {
 
 export function ZipLookupClient() {
   const searchParams = useSearchParams();
-  const { week } = useForecastWeek();
-  const initial = searchParams.get("zip") ?? DEFAULT_ZIP;
-  const [query, setQuery] = useState(initial);
-  const [activeZip, setActiveZip] = useState(initial);
-  const [error, setError] = useState<string | null>(null);
+  const { zips, status, error, loadPrediction, loadTrends } = useForecastData();
+  const urlZip = searchParams.get("zip") ?? DEFAULT_ZIP;
+  const [picked, setPicked] = useState<{ zip: string; fromUrl: string } | null>(null);
+  const activeZip = picked && picked.fromUrl === urlZip ? picked.zip : urlZip;
+  const [typedQuery, setTypedQuery] = useState<string | null>(null);
+  const query = typedQuery ?? activeZip;
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const [prediction, setPrediction] = useState<ApiPrediction | null>(null);
+  const [history, setHistory] = useState<ApiTrendPoint[]>([]);
+  const [loadingDetail, setLoadingDetail] = useState(true);
 
   useEffect(() => {
-    const z = searchParams.get("zip");
-    if (z) {
-      setQuery(z);
-      setActiveZip(z);
-    }
-  }, [searchParams]);
+    let cancelled = false;
 
-  const data = useMemo(() => getZipData(activeZip, week), [activeZip, week]);
-  const suggestions = searchZips(query, week);
+    void Promise.all([
+      loadPrediction(activeZip),
+      loadTrends(activeZip).catch(() => ({ history: [] as ApiTrendPoint[] })),
+    ])
+      .then(([pred, trends]) => {
+        if (cancelled) return;
+        setPrediction(pred);
+        setHistory("history" in trends ? trends.history : []);
+        setLookupError(null);
+        setLoadingDetail(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setPrediction(null);
+        setHistory([]);
+        setLoadingDetail(false);
+        if (err instanceof ApiError && err.status === 404) {
+          setLookupError("No matching NYC ZIP in the forecast dataset.");
+        } else {
+          setLookupError(err instanceof Error ? err.message : "Could not load ZIP forecast.");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeZip, loadPrediction, loadTrends]);
+
+  const suggestions = useMemo(() => searchZips(zips, query), [zips, query]);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const found = getZipData(query, week) ?? suggestions[0];
+    const exact = zips.find((z) => z.zip_code === query.trim().padStart(5, "0"));
+    const found = exact ?? suggestions[0];
     if (!found) {
-      setError("No matching NYC ZIP in the mock dataset.");
+      setLookupError("No matching NYC ZIP in the forecast dataset.");
       return;
     }
-    setError(null);
-    setActiveZip(found.zip);
-    setQuery(found.zip);
+    setLookupError(null);
+    setPicked({ zip: found.zip_code, fromUrl: urlZip });
+    setTypedQuery(found.zip_code);
   }
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
+      {status === "error" && <p className="text-sm text-red-400">{error}</p>}
       <form onSubmit={onSubmit} className="flex gap-2">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => setTypedQuery(e.target.value)}
             placeholder="Search ZIP, neighborhood, or borough — e.g. 10310"
             className="h-11 w-full rounded-xl border border-white/10 bg-[#131a2b] pl-10 pr-3 text-sm text-white outline-none ring-[#22c55e] placeholder:text-slate-500 focus:ring-2"
           />
@@ -130,25 +222,31 @@ export function ZipLookupClient() {
         <div className="flex flex-wrap gap-2">
           {suggestions.map((s) => (
             <button
-              key={s.zip}
+              key={s.zip_code}
               type="button"
               onClick={() => {
-                setActiveZip(s.zip);
-                setQuery(s.zip);
-                setError(null);
+                setPicked({ zip: s.zip_code, fromUrl: urlZip });
+                setTypedQuery(s.zip_code);
+                setLookupError(null);
               }}
               className="rounded-full border border-white/10 bg-[#131a2b] px-3 py-1 text-xs text-slate-300 hover:border-[#22c55e]/40 hover:text-white"
             >
-              {s.zip} · {s.neighborhood}
+              {s.zip_code} · {s.areas}
             </button>
           ))}
         </div>
       )}
-      {error && <p className="text-sm text-red-400">{error}</p>}
-      {data ? (
-        <ZipResults data={data} />
+      {lookupError && <p className="text-sm text-red-400">{lookupError}</p>}
+      {loadingDetail && prediction?.zip_code !== activeZip && (
+        <p className="text-sm text-slate-400">Loading forecast from the API…</p>
+      )}
+      {prediction && prediction.zip_code === activeZip ? (
+        <ZipResults prediction={prediction} history={history} />
       ) : (
-        <p className="text-sm text-slate-400">Enter a ZIP to see the mock forecast.</p>
+        !lookupError &&
+        prediction == null && (
+          <p className="text-sm text-slate-400">Enter a ZIP to see the live forecast.</p>
+        )
       )}
     </div>
   );

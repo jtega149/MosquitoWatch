@@ -35,6 +35,14 @@ class Indicators(BaseModel):
     seasonality: str | None = None
 
 
+class ForecastDay(BaseModel):
+    """One day inside the next-week (7-day) surveillance forecast window."""
+
+    date: str
+    risk_score: float = Field(..., ge=0.0, le=100.0)
+    risk_level: str
+
+
 class PredictionResponse(BaseModel):
     """Output contract for the future prediction endpoint."""
 
@@ -42,9 +50,11 @@ class PredictionResponse(BaseModel):
     borough: str
     areas: str
     forecast_week: int
+    forecast_year: int
     risk_score: float = Field(..., ge=0.0, le=100.0)
     risk_level: str
     indicators: Indicators
+    next_7_days: list[ForecastDay]
     explanation: str
 
 
@@ -60,6 +70,8 @@ class ForecastResponse(BaseModel):
     """Map forecast summary without a Gemini explanation."""
 
     zip_code: str = Field(..., pattern=r"^\d{5}$")
+    forecast_week: int
+    forecast_year: int
     risk_score: float = Field(..., ge=0.0, le=100.0)
     risk_level: str
 

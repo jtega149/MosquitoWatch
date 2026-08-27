@@ -67,3 +67,23 @@ def test_get_history_sorted_chronologically():
 def test_get_history_unknown_zip_raises():
     with pytest.raises(data_service.ZipNotFoundError):
         data_service.get_history("00000")
+
+
+def test_get_forecast_period_is_the_week_after_latest_features():
+    period = data_service.get_forecast_period()
+    features = data_service.get_latest_features("10310")
+    assert period["feature_week"] == int(features["week_of_year"])
+    assert period["forecast_week"] >= 1
+    assert period["forecast_year"] >= 2026
+
+
+def test_seasonality_label_peak_and_off_season():
+    assert data_service.seasonality_label(34) == "Peak mosquito season (Jun–Sep)"
+    assert data_service.seasonality_label(10) == "Off-season"
+
+
+def test_next_7_days_covers_iso_week():
+    days = data_service.next_7_days(2026, 34, 33.0, "Moderate")
+    assert len(days) == 7
+    assert days[0]["date"] <= days[-1]["date"]
+    assert all(day["risk_score"] == 33.0 for day in days)

@@ -1,4 +1,4 @@
-import { riskColor } from "@/lib/mock-data";
+import { riskColor } from "@/lib/risk";
 import type { RiskLevel } from "@/lib/types";
 
 type Size = "sm" | "md" | "lg";
