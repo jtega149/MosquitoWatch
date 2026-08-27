@@ -16,13 +16,14 @@ def generate_explanation(
     positive_prev_4_weeks: int,
     temperature: float,
     rainfall: float,
-    seasonality: str,
+    seasonality: str | None,
 ) -> str:
     """Explain a completed prediction without recalculating or changing it."""
 
-    if not GEMINI_API_KEY:
+    if not GEMINI_API_KEY or not GEMINI_MODEL:
         return FALLBACK_EXPLANATION
 
+    seasonality_line = f"\n- Seasonality: {seasonality}" if seasonality is not None else ""
     prompt = f"""Explain the supplied MosquitoWatch forecast to a general audience.
 
 The forecast concerns recorded West Nile-positive mosquito detections. It does not
@@ -36,8 +37,7 @@ Supplied information:
 - Positive detections in the previous 2 weeks: {positive_prev_2_weeks}
 - Positive detections in the previous 4 weeks: {positive_prev_4_weeks}
 - Temperature: {temperature}
-- Rainfall: {rainfall}
-- Seasonality: {seasonality}
+- Rainfall: {rainfall}{seasonality_line}
 
 Rules:
 - Do not calculate a new forecast probability.
@@ -52,11 +52,11 @@ Rules:
     client = None
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
-        response = client.models.generate_content(
+        interaction = client.interactions.create(
             model=GEMINI_MODEL,
-            contents=prompt,
+            input=prompt,
         )
-        explanation = response.text
+        explanation = interaction.output_text
         if not explanation or not explanation.strip():
             return FALLBACK_EXPLANATION
         return explanation.strip()

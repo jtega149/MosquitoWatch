@@ -18,7 +18,7 @@ def make_prediction_response(risk_score: float = 76.0) -> PredictionResponse:
             positive_prev_4_weeks=7,
             temperature=83.0,
             rainfall=1.42,
-            seasonality="Peak",
+            seasonality=None,
         ),
         explanation="Mock explanation.",
     )
@@ -30,7 +30,7 @@ def test_prediction_contract_accepts_valid_values() -> None:
 
     assert request.model_dump() == {"zip_code": "10310"}
     assert response.risk_score == 76.0
-    assert response.indicators.seasonality == "Peak"
+    assert response.indicators.seasonality is None
     assert response.explanation == "Mock explanation."
 
 
