@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import gemini_service
 from schemas import HealthResponse, Indicators, PredictionRequest, PredictionResponse
 
 app = FastAPI(title="MosquitoWatch NYC")
@@ -21,9 +22,9 @@ def health() -> HealthResponse:
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest) -> PredictionResponse:
-    """Return a temporary mock prediction until model integration is ready."""
+    """Return a mock prediction with a Gemini-generated explanation."""
 
-    return PredictionResponse(
+    prediction = PredictionResponse(
         zip_code=request.zip_code,
         borough="Staten Island",
         areas="Port Richmond / West Brighton",
@@ -38,5 +39,18 @@ def predict(request: PredictionRequest) -> PredictionResponse:
             rainfall=1.42,
             seasonality="Peak",
         ),
-        explanation="Mock explanation.",
+        explanation=gemini_service.FALLBACK_EXPLANATION,
     )
+
+    explanation = gemini_service.generate_explanation(
+        zip_code=prediction.zip_code,
+        risk_score=prediction.risk_score,
+        risk_level=prediction.risk_level,
+        positive_prev_week=prediction.indicators.positive_prev_week,
+        positive_prev_2_weeks=prediction.indicators.positive_prev_2_weeks,
+        positive_prev_4_weeks=prediction.indicators.positive_prev_4_weeks,
+        temperature=prediction.indicators.temperature,
+        rainfall=prediction.indicators.rainfall,
+        seasonality=prediction.indicators.seasonality,
+    )
+    return prediction.model_copy(update={"explanation": explanation})
