@@ -3,20 +3,15 @@ data_service.py
 ----------------
 Owned by: Backend Person 1 (Data + ML Inference)
 
-Loads and serves the artifacts produced by the ML teammate:
-    - latest_features.csv   -> one row per ZIP, most recent week's features
+Loads and serves the artifacts produced by the ML pipeline:
+    - latest_features.csv   -> one row per ZIP, current week's features to forecast upcoming week
     - zip_metadata.csv      -> borough / neighborhood info per ZIP
     - history.csv           -> historical positive-detection counts per ZIP
 
-Design notes (per the project contract):
+Design notes:
     - ZIP codes are ALWAYS treated as strings, zero-padded to 5 digits.
-      Never let pandas coerce them to int/float ("10310" -> "10310.0" bugs).
     - Files are read from disk once and cached in memory (lru_cache).
-      Call reload_data() to force a refresh (e.g. in tests, or if the ML
-      teammate ships updated CSVs mid-hackathon).
-    - This module raises clear, typed exceptions instead of returning
-      None/empty so that app.py (Person 2) can map them to clean HTTP
-      status codes (404 for unknown ZIP, 500 for a broken data file).
+    - Call reload_data() to force a refresh in tests or when artifacts update.
 """
 
 from __future__ import annotations
@@ -32,15 +27,19 @@ LATEST_FEATURES_PATH = os.path.join(ARTIFACTS_DIR, "latest_features.csv")
 ZIP_METADATA_PATH = os.path.join(ARTIFACTS_DIR, "zip_metadata.csv")
 HISTORY_PATH = os.path.join(ARTIFACTS_DIR, "history.csv")
 
+# Core features expected in latest_features.csv
 REQUIRED_FEATURE_COLUMNS = [
     "zip_code",
     "borough",
     "week_of_year",
-    "avg_temp_prev_7d",
-    "rainfall_prev_7d",
-    "positives_prev_week",
-    "positives_prev_2_weeks",
-    "positives_prev_4_weeks",
+    "temp_mean",
+    "humidity_mean",
+    "precip_sum",
+    "precip_7d",
+    "precip_14d",
+    "degree_days_14d",
+    "positives_last_1w",
+    "positives_last_2_4w",
 ]
 REQUIRED_METADATA_COLUMNS = ["zip_code", "borough", "areas"]
 REQUIRED_HISTORY_COLUMNS = ["zip_code", "year", "week", "positive_detections"]
@@ -62,11 +61,16 @@ def _read_csv_as_str_zip(path: str, required_columns: list[str]) -> pd.DataFrame
     if not os.path.exists(path):
         raise DataServiceError(
             f"Required data file not found: {path}. "
-            "Confirm the ML teammate has exported this artifact, or run "
-            "generate_sample_artifacts.py to create placeholder data."
+            "Confirm the ML teammate has exported this artifact."
         )
-    df = pd.read_csv(path, dtype={"zip_code": str})
+    df = pd.read_csv(path, dtype={"zip_code": str, "zipcode": str})
+    if "zip_code" not in df.columns and "zipcode" in df.columns:
+        df["zip_code"] = df["zipcode"]
     df["zip_code"] = df["zip_code"].astype(str).str.zfill(5)
+
+    # Allow alias for areas / neighborhoods
+    if "areas" not in df.columns and "neighborhoods" in df.columns:
+        df["areas"] = df["neighborhoods"].fillna("New York Metropolitan Area")
 
     missing = [c for c in required_columns if c not in df.columns]
     if missing:
