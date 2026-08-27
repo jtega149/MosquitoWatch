@@ -20,7 +20,7 @@ def generate_explanation(
 ) -> str:
     """Explain a completed prediction without recalculating or changing it."""
 
-    if not GEMINI_API_KEY:
+    if not GEMINI_API_KEY or not GEMINI_MODEL:
         return FALLBACK_EXPLANATION
 
     seasonality_line = f"\n- Seasonality: {seasonality}" if seasonality is not None else ""
@@ -52,11 +52,11 @@ Rules:
     client = None
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
-        response = client.models.generate_content(
+        interaction = client.interactions.create(
             model=GEMINI_MODEL,
-            contents=prompt,
+            input=prompt,
         )
-        explanation = response.text
+        explanation = interaction.output_text
         if not explanation or not explanation.strip():
             return FALLBACK_EXPLANATION
         return explanation.strip()
