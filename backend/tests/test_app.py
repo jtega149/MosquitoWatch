@@ -106,8 +106,10 @@ def test_predict_maps_real_services_and_prior_history(monkeypatch) -> None:
     monkeypatch.setattr("app.gemini_service.generate_explanation", gemini)
     response = client.post("/predict", json={"zip_code": "10310"})
     assert response.status_code == 200
+    days = data_service.next_7_days(
+        2026, 34, 33.0, "Moderate", zip_code="10310", lat=40.75, lon=-73.98, temp_mean=23.8, humidity_mean=70.0, precip_sum=61.4
+    )
     body = response.json()
-    days = data_service.next_7_days(2026, 34, 33.0, "Moderate")
     assert body == {
         "zip_code": "10310",
         "borough": "Staten Island",
