@@ -1,0 +1,194 @@
+zipcode,borough,neighborhoods,latitude,longitude
+00083,Manhattan,Central Park,40.7829,-73.9654
+10001,Manhattan,New York Metropolitan Area,40.75065,-73.9973
+10002,Manhattan,"Little Italy, Chinatown, Sara D. Roosevelt Park",40.71597,-73.9869
+10003,Manhattan,New York Metropolitan Area,40.73186,-73.98912
+10004,Manhattan,New York Metropolitan Area,40.6898,-74.01739
+10005,Manhattan,New York Metropolitan Area,40.70622,-74.00869
+10006,Manhattan,Financial District,40.70949,-74.01305
+10007,Manhattan,New York Metropolitan Area,40.71387,-74.00787
+10009,Manhattan,New York Metropolitan Area,40.72639,-73.9786
+10010,Manhattan,New York Metropolitan Area,40.73904,-73.98262
+10011,Manhattan,Greenwich Village,40.74184,-74.00053
+10012,Manhattan,New York Metropolitan Area,40.72563,-73.99794
+10013,Manhattan,New York Metropolitan Area,40.72005,-74.00481
+10014,Manhattan,New York Metropolitan Area,40.73414,-74.00603
+10016,Manhattan,New York Metropolitan Area,40.74518,-73.97805
+10017,Manhattan,New York Metropolitan Area,40.75239,-73.97268
+10018,Manhattan,New York Metropolitan Area,40.75533,-73.9927
+10019,Manhattan,New York Metropolitan Area,40.76573,-73.98507
+10020,Manhattan,New York Metropolitan Area,40.75917,-73.98072
+10021,Manhattan,New York Metropolitan Area,40.76964,-73.95902
+10022,Manhattan,New York Metropolitan Area,40.75857,-73.96793
+10023,Manhattan,New York Metropolitan Area,40.77457,-73.97902
+10024,Manhattan,New York Metropolitan Area,40.78566,-73.97127
+10025,Manhattan,Manhattan Valley,40.79825,-73.96834
+10026,Manhattan,New York Metropolitan Area,40.80298,-73.95353
+10027,Manhattan,Harlem,40.81266,-73.95498
+10028,Manhattan,New York Metropolitan Area,40.77645,-73.95338
+10029,Manhattan,New York Metropolitan Area,40.79225,-73.94733
+10030,Manhattan,New York Metropolitan Area,40.81825,-73.94283
+10031,Manhattan,Manhattanville,40.8248,-73.95021
+10032,Manhattan,"Hamilton Heights, Washington Heights",40.83904,-73.94281
+10033,Manhattan,Washington Heights,40.84748,-73.93551
+10034,Manhattan,New York Metropolitan Area,40.86708,-73.92431
+10035,Manhattan,New York Metropolitan Area,40.79525,-73.93042
+10036,Manhattan,New York Metropolitan Area,40.75979,-73.99068
+10037,Manhattan,New York Metropolitan Area,40.81303,-73.93771
+10038,Manhattan,New York Metropolitan Area,40.70926,-74.0029
+10039,Manhattan,New York Metropolitan Area,40.82629,-73.93753
+10040,Manhattan,New York Metropolitan Area,40.8581,-73.9296
+10044,Manhattan,New York Metropolitan Area,40.76191,-73.94997
+10048,Manhattan,New York Metropolitan Area,40.7831,-73.9712
+10065,Manhattan,New York Metropolitan Area,40.76469,-73.96326
+10069,Manhattan,New York Metropolitan Area,40.77738,-73.98883
+10075,Manhattan,New York Metropolitan Area,40.77341,-73.95629
+10111,Manhattan,New York Metropolitan Area,40.75953,-73.97858
+10115,Manhattan,New York Metropolitan Area,40.81085,-73.96374
+10128,Manhattan,New York Metropolitan Area,40.7815,-73.9502
+10280,Manhattan,New York Metropolitan Area,40.7097,-74.01659
+10281,Manhattan,New York Metropolitan Area,40.7831,-73.9712
+10282,Manhattan,New York Metropolitan Area,40.71638,-74.015
+10301,Staten Island,"Castleton Corners, Westerleigh, Silver Lake, Grymes Hill, Randall Manor",40.6275,-74.09438
+10302,Staten Island,"Mariners Harbor, Port Richmond",40.63081,-74.13766
+10303,Staten Island,"Arlington, Graniteville, Mariners Harbor",40.62989,-74.17413
+10304,Staten Island,"Dongan Hills, Old town/Dongan Hills",40.60596,-74.09354
+10305,Staten Island,"South Beach, Old Town, Arrochar, Grasmere",40.59655,-74.07578
+10306,Staten Island,"Midland Beach, New Dorp Beach, Dongan Hills, Grant City, New Dorp, Oakwood",40.57171,-74.12426
+10307,Staten Island,"Richmond Valley, Tottenville, Butler Manor",40.50775,-74.24209
+10308,Staten Island,Great Kills,40.55283,-74.15153
+10309,Staten Island,"Rossville, Pleasant Plains, Sandy Ground",40.52984,-74.21978
+10310,Staten Island,"Port Richmond, West Brighton",40.63261,-74.11615
+10312,Staten Island,"Eltingville, Annadale, Greenridge, Arden Heights, Great Kills",40.54524,-74.18044
+10314,Staten Island,"Bloomfield, Greenridge, Bulls Head, Heartland Village, Willowbrook, Westerleigh, Chelsea, New Springville, Castleton Corners",40.6007,-74.16431
+10451,Bronx,New York Metropolitan Area,40.82217,-73.92262
+10452,Bronx,New York Metropolitan Area,40.83779,-73.92334
+10453,Bronx,New York Metropolitan Area,40.85251,-73.91329
+10454,Bronx,Mott Haven,40.80558,-73.9166
+10455,Bronx,New York Metropolitan Area,40.8148,-73.9086
+10456,Bronx,Morrisania,40.83067,-73.90816
+10457,Bronx,"Claremont Village, East Tremont",40.84571,-73.89792
+10458,Bronx,New York Metropolitan Area,40.86249,-73.88645
+10459,Bronx,New York Metropolitan Area,40.82569,-73.893
+10460,Bronx,Van Nest,40.84234,-73.87906
+10461,Bronx,"Morris Park, Middletown, Pelham Bay, Pelham Parkway",40.84674,-73.84079
+10462,Bronx,Pelham Parkway,40.84327,-73.86042
+10463,Bronx,New York Metropolitan Area,40.88634,-73.90155
+10464,Bronx,Co-op City,40.86959,-73.79585
+10465,Bronx,"Spencer Estates, Throgs Neck, Schuylerville",40.82733,-73.82217
+10466,Bronx,New York Metropolitan Area,40.89096,-73.84624
+10467,Bronx,"Woodlawn, Norwood",40.87526,-73.87203
+10468,Bronx,New York Metropolitan Area,40.86894,-73.9
+10469,Bronx,Baychester,40.86851,-73.84669
+10470,Bronx,New York Metropolitan Area,40.88953,-73.87259
+10471,Bronx,"North Riverdale, Fieldston",40.89998,-73.90675
+10472,Bronx,New York Metropolitan Area,40.82968,-73.86937
+10473,Bronx,"Clason Point, Harding Park, Castle Hill, Soundview",40.81869,-73.85847
+10474,Bronx,Hunts Point,40.81134,-73.88517
+10475,Bronx,Co-op City,40.87564,-73.82693
+11001,Queens,New York Metropolitan Area,40.72332,-73.70495
+11004,Queens,Floral Park,40.74619,-73.71151
+11005,Queens,Little Neck,40.75664,-73.71424
+11040,Queens,New York Metropolitan Area,40.74535,-73.68029
+11096,Queens,New York Metropolitan Area,40.62135,-73.75699
+11101,Queens,"Blissville, Dutch Kills",40.74711,-73.93971
+11102,Queens,New York Metropolitan Area,40.7716,-73.9256
+11103,Queens,New York Metropolitan Area,40.7626,-73.91328
+11104,Queens,New York Metropolitan Area,40.74484,-73.92047
+11105,Queens,Steinway,40.77909,-73.90652
+11106,Queens,New York Metropolitan Area,40.76221,-73.93153
+11109,Queens,New York Metropolitan Area,40.74662,-73.95701
+11201,Brooklyn,New York Metropolitan Area,40.6937,-73.98986
+11203,Brooklyn,Prospect Lefferts Gardens,40.64957,-73.93433
+11204,Brooklyn,Bensonhurst,40.61881,-73.98494
+11205,Brooklyn,New York Metropolitan Area,40.69689,-73.96807
+11206,Brooklyn,East Williamsburg,40.70187,-73.94255
+11207,Brooklyn,"New Lots, Broadway Junction",40.67016,-73.89383
+11208,Brooklyn,"Spring Creek, Cypress Hills",40.67485,-73.87248
+11209,Brooklyn,Bay Ridge,40.6218,-74.03015
+11210,Brooklyn,New York Metropolitan Area,40.62806,-73.94631
+11211,Brooklyn,New York Metropolitan Area,40.71408,-73.94517
+11212,Brooklyn,Brownsville,40.66291,-73.91307
+11213,Brooklyn,New York Metropolitan Area,40.67115,-73.93627
+11214,Brooklyn,"Bath Beach, Bensonhurst",40.59969,-73.99637
+11215,Brooklyn,"Gowanus, Windsor Terrace",40.66269,-73.98674
+11216,Brooklyn,New York Metropolitan Area,40.68084,-73.94922
+11217,Brooklyn,New York Metropolitan Area,40.68167,-73.97853
+11218,Brooklyn,New York Metropolitan Area,40.64312,-73.97645
+11219,Brooklyn,"Dyker Heights, Kensington",40.63262,-73.99677
+11220,Brooklyn,Sunset Park,40.64103,-74.01669
+11221,Brooklyn,"Bedford Stuyvesant, Bushwick",40.69143,-73.92763
+11222,Brooklyn,Greenpoint,40.72779,-73.9476
+11223,Brooklyn,Gravesend,40.59709,-73.97347
+11224,Brooklyn,New York Metropolitan Area,40.57737,-73.98871
+11225,Brooklyn,New York Metropolitan Area,40.66312,-73.95387
+11226,Brooklyn,New York Metropolitan Area,40.64641,-73.95666
+11228,Brooklyn,Dyker Heights,40.61673,-74.01343
+11229,Brooklyn,"Homecrest, Marine Park",40.60129,-73.94449
+11230,Brooklyn,New York Metropolitan Area,40.62209,-73.96519
+11231,Brooklyn,New York Metropolitan Area,40.67792,-74.00515
+11232,Brooklyn,"Greenwood Heights, Greenwood Cemetery",40.65654,-74.00518
+11233,Brooklyn,New York Metropolitan Area,40.6783,-73.91993
+11234,Brooklyn,"Bergen Beach, Marine Park, Flatlands, Mill Basin",40.60772,-73.91065
+11235,Brooklyn,"Sheeps Head Bay, Brighton Beach",40.58422,-73.94317
+11236,Brooklyn,"Starrett City, Canarsie, Remsen Village",40.63941,-73.90066
+11237,Brooklyn,East Williamsburg,40.70416,-73.92114
+11238,Brooklyn,Prospect Heights,40.67133,-73.96594
+11239,Brooklyn,New York Metropolitan Area,40.64689,-73.86401
+11249,Brooklyn,New York Metropolitan Area,40.7045,-73.966
+11251,Brooklyn,New York Metropolitan Area,40.6782,-73.9442
+11354,Queens,"Flushing, College Point",40.76821,-73.82739
+11355,Queens,"Queensboro Hill, Downtown Flushing, Murray Hills",40.75144,-73.82123
+11356,Queens,"College Point, Malba",40.78487,-73.84153
+11357,Queens,"Beechhurst, Whitestone, Malba",40.78513,-73.81004
+11358,Queens,Auburndale,40.76036,-73.79653
+11359,Queens,New York Metropolitan Area,40.7916,-73.77672
+11360,Queens,Bay Terrace,40.78042,-73.78184
+11361,Queens,Bayside,40.76419,-73.77277
+11362,Queens,Douglaston,40.7602,-73.73242
+11363,Queens,Douglas Manor,40.77235,-73.74629
+11364,Queens,Oakland Gardens,40.74625,-73.75606
+11365,Queens,"Fresh Meadows, Pomonok, Auburndale",40.73963,-73.79449
+11366,Queens,New York Metropolitan Area,40.73112,-73.78046
+11367,Queens,"Kew Gardens Hills, Queensboro Hill",40.73047,-73.82275
+11368,Queens,"Queensboro Hill, Corona",40.74974,-73.85304
+11369,Queens,New York Metropolitan Area,40.76349,-73.87222
+11370,Queens,Astoria Heights,40.76539,-73.89422
+11371,Queens,New York Metropolitan Area,40.77441,-73.87327
+11372,Queens,New York Metropolitan Area,40.75172,-73.88367
+11373,Queens,New York Metropolitan Area,40.73895,-73.87856
+11374,Queens,Rego Park,40.72646,-73.86146
+11375,Queens,Forest Hills Gardens,40.72297,-73.84318
+11377,Queens,"Maspeth, Astoria Heights, Sunnyside Gardens",40.74477,-73.90516
+11378,Queens,Maspeth,40.72474,-73.90964
+11379,Queens,Middle Village,40.71706,-73.88052
+11385,Queens,Glendale,40.70065,-73.88942
+11411,Queens,New York Metropolitan Area,40.69406,-73.73627
+11412,Queens,New York Metropolitan Area,40.69802,-73.75908
+11413,Queens,"Brookville, Laurelton",40.67117,-73.75206
+11414,Queens,Howard Beach,40.6576,-73.8448
+11415,Queens,kew Gardens,40.70808,-73.82804
+11416,Queens,New York Metropolitan Area,40.68459,-73.84971
+11417,Queens,Ozone Park,40.67641,-73.84459
+11418,Queens,kew Gardens,40.70032,-73.83602
+11419,Queens,New York Metropolitan Area,40.68861,-73.82306
+11420,Queens,"Ozone Park, South Ozone Park",40.6735,-73.8177
+11421,Queens,Woodhaven,40.69403,-73.85866
+11422,Queens,"Laurelton, Rosedale",40.66079,-73.73757
+11423,Queens,Holliswood,40.71567,-73.7683
+11426,Queens,"Glen Oaks, Bellaire",40.73641,-73.72236
+11427,Queens,Holliswood,40.73094,-73.74572
+11428,Queens,New York Metropolitan Area,40.72099,-73.7422
+11429,Queens,New York Metropolitan Area,40.70956,-73.73848
+11430,Queens,New York Metropolitan Area,40.64697,-73.7873
+11432,Queens,Jamaica Hills,40.71493,-73.79296
+11433,Queens,South Jamaica,40.69809,-73.78675
+11434,Queens,Rochdale,40.67786,-73.77707
+11435,Queens,Briarwood,40.70108,-73.80964
+11436,Queens,Rochdale,40.67586,-73.79665
+11451,Queens,New York Metropolitan Area,40.70119,-73.79578
+11691,Queens,"Far Rockaway, Edgemere",40.6021,-73.76179
+11692,Queens,Somerville,40.59415,-73.79199
+11693,Queens,New York Metropolitan Area,40.59166,-73.80967
+11694,Queens,New York Metropolitan Area,40.57531,-73.85124
+11697,Queens,New York Metropolitan Area,40.55713,-73.91372
