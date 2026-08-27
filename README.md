@@ -12,7 +12,7 @@ data/raw  →  data/processed  →  ML training  →  FastAPI  →  Gemini  → 
 2. **ML** trains a model and writes artifacts to `ml/artifacts/`
 3. **FastAPI** loads those artifacts and serves JSON over HTTP
 4. **Gemini** generates plain-language explanations of model outputs
-5. **React** (Vite) renders the dashboard from the API
+5. **Next.js** renders the dashboard from the API (mock data until the API is wired)
 
 ## Folder structure
 
@@ -29,7 +29,7 @@ mosquito-watch/
 │   ├── tests/
 │   └── requirements.txt
 │
-├── frontend/          (Vite app, scaffolded separately)
+├── frontend/          (Next.js App Router + TypeScript)
 │
 ├── data/
 │   ├── raw/
@@ -64,4 +64,10 @@ Health check: [http://localhost:8000/health](http://localhost:8000/health)
 
 ### Frontend
 
-*Placeholder — frontend will be scaffolded separately with Vite.*
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Opens at [http://localhost:3000](http://localhost:3000). The dashboard uses mock ZIP forecasts for now (no Gemini API key required).
