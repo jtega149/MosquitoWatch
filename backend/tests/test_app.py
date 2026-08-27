@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 import data_service
 import gemini_service
 import model_service
+import rag_chat_service
 from app import app
 
 
@@ -236,6 +237,38 @@ def test_trends_unknown_zip_returns_404(monkeypatch) -> None:
 
     monkeypatch.setattr("app.data_service.get_history", unknown)
     assert client.get("/trends/99999").status_code == 404
+
+
+def test_chat_returns_rag_payload(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "app.rag_chat_service.answer",
+        lambda _message: rag_chat_service.ChatResult(
+            reply="The map uses GET /forecasts.",
+            cached=False,
+            similarity=None,
+        ),
+    )
+    response = client.post("/chat", json={"message": "How does the map work?"})
+    assert response.status_code == 200
+    assert response.json() == {
+        "reply": "The map uses GET /forecasts.",
+        "cached": False,
+        "similarity": None,
+    }
+
+
+def test_chat_rejects_empty_message() -> None:
+    assert client.post("/chat", json={"message": "   "}).status_code == 422
+
+
+def test_chat_status_reports_skipped_startup() -> None:
+    response = client.get("/chat/status")
+    assert response.status_code == 200
+    assert response.json() == {
+        "redis_ready": False,
+        "cache_enabled": False,
+        "rag_index_enabled": False,
+    }
 
 
 def test_data_service_error_returns_controlled_500(monkeypatch) -> None:

@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class HealthResponse(BaseModel):
@@ -89,3 +89,35 @@ class TrendsResponse(BaseModel):
 
     zip_code: str = Field(..., pattern=r"^\d{5}$")
     history: list[TrendPoint]
+
+
+class ChatRequest(BaseModel):
+    """User question for the Gemini RAG assistant."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    message: str = Field(..., min_length=1, max_length=500)
+
+    @field_validator("message")
+    @classmethod
+    def strip_message(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("message cannot be blank")
+        return cleaned
+
+
+class ChatResponse(BaseModel):
+    """Assistant reply, plus whether Redis served a semantic cache hit."""
+
+    reply: str
+    cached: bool
+    similarity: float | None = Field(default=None, ge=0.0, le=1.0)
+
+
+class ChatStatusResponse(BaseModel):
+    """Operational flags for the RAG + cache stack."""
+
+    redis_ready: bool
+    cache_enabled: bool
+    rag_index_enabled: bool

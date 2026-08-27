@@ -10,3 +10,5 @@ google-genai
 python-dotenv
 pytest
 httpx
+redis
+redisvl
