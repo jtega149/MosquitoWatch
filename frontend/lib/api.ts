@@ -108,3 +108,13 @@ export function fetchPrediction(zipCode: string) {
 export function fetchTrends(zipCode: string) {
   return apiGet<ApiTrends>(`/trends/${zipCode}`);
 }
+
+export type ApiChatResponse = {
+  reply: string;
+  cached: boolean;
+  similarity: number | null;
+};
+
+export function fetchChat(message: string) {
+  return apiPost<ApiChatResponse>("/chat", { message });
+}

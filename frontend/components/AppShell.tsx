@@ -1,6 +1,7 @@
 "use client";
 
 import { ForecastProvider } from "@/lib/forecast-context";
+import { ChatWidget } from "./ChatWidget";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 
@@ -14,6 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <main className="min-h-0 flex-1 overflow-auto p-5">{children}</main>
         </div>
       </div>
+      <ChatWidget />
     </ForecastProvider>
   );
 }

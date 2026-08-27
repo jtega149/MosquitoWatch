@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -5,7 +7,11 @@ from fastapi.responses import JSONResponse
 import data_service
 import gemini_service
 import model_service
+import rag_chat_service
 from schemas import (
+    ChatRequest,
+    ChatResponse,
+    ChatStatusResponse,
     ForecastDay,
     ForecastResponse,
     HealthResponse,
@@ -16,7 +22,14 @@ from schemas import (
     ZipResponse,
 )
 
-app = FastAPI(title="MosquitoWatch NYC")
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    rag_chat_service.startup()
+    yield
+
+
+app = FastAPI(title="MosquitoWatch NYC", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -155,3 +168,18 @@ def forecasts() -> list[ForecastResponse]:
 @app.get("/trends/{zip_code}", response_model=TrendsResponse)
 def trends(zip_code: str) -> TrendsResponse:
     return TrendsResponse(zip_code=zip_code, history=data_service.get_history(zip_code))
+
+
+@app.get("/chat/status", response_model=ChatStatusResponse)
+def chat_status() -> ChatStatusResponse:
+    return ChatStatusResponse(**rag_chat_service.status())
+
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest) -> ChatResponse:
+    result = rag_chat_service.answer(request.message)
+    return ChatResponse(
+        reply=result.reply,
+        cached=result.cached,
+        similarity=result.similarity,
+    )

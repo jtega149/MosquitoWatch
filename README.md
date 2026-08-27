@@ -62,6 +62,18 @@ uvicorn app:app --reload --port 8000
 
 Health check: [http://localhost:8000/health](http://localhost:8000/health)
 
+### Redis (RAG chat + semantic cache)
+
+The assistant uses Redis Stack (RediSearch) via RedisVL. Start it before the API:
+
+```bash
+docker compose up -d redis
+```
+
+Redis is on `localhost:6380` so it does not collide with a local Homebrew Redis on `6379`. Optional Redis Insight UI: [http://localhost:8001](http://localhost:8001).
+
+If chat logs `RAG Redis stack unavailable`, confirm the container is up (`docker compose ps`) and that the API is using `REDIS_URL=redis://localhost:6380`.
+
 ### Frontend
 
 ```bash
