@@ -1,0 +1,81 @@
+================================================================================
+NYC WEST NILE RISK PREDICTION — FINAL EXPERIMENT REPORT
+================================================================================
+
+1. DATASET SUMMARY
+-------------------
+Source: data/processed/training_data.csv
+Documentation: DATA_TASKS.md
+Grain: One row per ZIP code per epidemiological week (Year 2026)
+Total Observations: 2316
+Total Features Ingested: 27
+Model Input Features: 20 (18 numerical, 2 categorical)
+
+Target Variable: 'elevated'
+  - Class 0 (Low / Not Elevated): 1879 (81.13%)
+  - Class 1 (Elevated WNV Activity): 437 (18.87%)
+  - Imbalance Ratio: ~4.3 : 1
+
+Excluded Features (Leakage / Identifiers / Constants):
+  - zip_detection_status: LEAKAGE (snapshot public status as of 2026-08-21)
+  - positive_count: TARGET DERIVATIVE (same-week count)
+  - elevated: PRIMARY TARGET
+  - year, season: CONSTANTS (no variance in 2026 summer extract)
+  - neighborhoods: High cardinality text with 1,128 missing values
+  - week_start: Date identifier used for temporal indexing/splitting
+
+2. MODEL CANDIDATES & METHODOLOGY
+----------------------------------
+All models evaluated on the exact same 80/20 Stratified Split (Random Seed 42).
+Pipeline fitted strictly on training data with median imputation and one-hot encoding.
+
+Candidates:
+  - Model A: Linear Regression (Baseline; continuous predictions thresholded at 0.5)
+  - Model B: Logistic Regression (Regularized L2, balanced class weighting, standard scaled)
+  - Model C: Random Forest (300 estimators, max_depth=12, balanced class weighting)
+  - Model D: XGBoost (200 estimators, max_depth=5, learning_rate=0.05, scale_pos_weight=4.31)
+
+3. MODEL PERFORMANCE COMPARISON (80/20 STRATIFIED TEST SET)
+------------------------------------------------------------
+              Model  Accuracy  Precision  Recall    F1  ROC-AUC
+  Linear Regression     0.918      0.829   0.716 0.768    0.929
+Logistic Regression     0.909      0.735   0.818 0.774    0.946
+      Random Forest     0.877      0.630   0.852 0.725    0.942
+            XGBoost     0.905      0.712   0.841 0.771    0.948
+
+4. TEMPORAL VALIDATION EXPERIMENT (Chronological Forward-Chain Split)
+--------------------------------------------------------------------
+Train: Weeks 2026-06-01 to 2026-07-27 (Weeks 22-30) | Test: Weeks 2026-08-03 to 2026-08-10 (Weeks 31-32)
+              Model  Accuracy  Precision  Recall    F1  ROC-AUC
+  Linear Regression     0.728      0.820   0.347 0.488    0.868
+Logistic Regression     0.593      0.477   0.951 0.636    0.875
+      Random Forest     0.699      0.559   0.917 0.695    0.873
+            XGBoost     0.834      0.730   0.882 0.799    0.887
+
+5. BEST MODEL SELECTION & RATIONALE
+------------------------------------
+Best Model: XGBoost
+
+Rationale:
+For public health biosurveillance, maximizing Recall and ROC-AUC is paramount because failing to 
+detect an active WNV transmission cluster (False Negative) has severe health consequences.
+XGBoost achieved the superior overall discriminatory capability (ROC-AUC = 0.948, 
+F1 = 0.771, Recall = 0.841), effectively capturing non-linear interactions 
+between autoregressive trap positives, degree days, and 14-day cumulative precipitation.
+
+6. TOP PREDICTIVE FEATURES (XGBoost)
+---------------------------------------------
+  1. positives_last_1w
+  2. borough_Manhattan
+  3. borough_Staten Island
+  4. positives_last_2_4w
+  5. degree_days_14d
+
+7. PUBLIC HEALTH & DATA LIMITATIONS
+------------------------------------
+  1. Single-Season Window: Data spans June-August 2026 only; multi-year seasonality and inter-annual climate shifts are unrepresented.
+  2. Public Surveillance Absence vs. True Zero: Lack of reported detection does not guarantee virus absence (no trap-effort denominator).
+  3. Spatial Weather Resolution: Weather observations derive from ZIP centroid reanalysis rather than on-site micro-climate sensors.
+  4. Public Health Notice: This product models elevated mosquito vector activity, NOT individual human clinical infection risk.
+
+Artifacts exported to results/, models/, and ml/artifacts/.
