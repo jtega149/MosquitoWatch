@@ -3,16 +3,8 @@ model_service.py
 -----------------
 Owned by: Backend Person 1 (Data + ML Inference)
 
-Loads the trained scikit-learn pipeline exactly once (module-level cache),
-and turns per-ZIP feature rows into a 0-100 forecast score + risk level.
-
-Contract with the ML teammate:
-    - model.joblib is a full sklearn Pipeline that already contains
-      preprocessing (OneHotEncoder for zip_code/borough, etc.) AND the
-      classifier. This module never re-implements or duplicates that
-      preprocessing - it always passes raw feature columns straight in.
-    - model_metadata.json declares the exact `feature_columns` (in order)
-      the pipeline expects, plus which class label is "positive".
+Loads the trained scikit-learn / XGBoost pipeline exactly once (module-level cache),
+and turns per-ZIP feature rows into a 0-100 forecast score + risk level for next week.
 """
 
 from __future__ import annotations
@@ -29,9 +21,7 @@ ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "artifacts")
 MODEL_PATH = os.path.join(ARTIFACTS_DIR, "model.joblib")
 METADATA_PATH = os.path.join(ARTIFACTS_DIR, "model_metadata.json")
 
-# Score -> risk label. Upper bound is exclusive. Agreed with the ML/frontend
-# teammates - these are forecast-score bands, NOT a claim about human
-# infection risk.
+# Score -> risk label. Upper bound is exclusive.
 RISK_THRESHOLDS = [
     (25, "Low"),
     (50, "Moderate"),
@@ -53,12 +43,11 @@ def _load_model():
     if _model is None:
         if not os.path.exists(MODEL_PATH):
             raise ModelServiceError(
-                f"Model file not found: {MODEL_PATH}. Run generate_sample_artifacts.py "
-                "for a placeholder model, or pull the real one from the ML teammate."
+                f"Model file not found: {MODEL_PATH}. Run train_models.py to export production artifacts."
             )
         try:
             _model = joblib.load(MODEL_PATH)
-        except Exception as exc:  # noqa: BLE001 - want to wrap any load failure
+        except Exception as exc:
             raise ModelServiceError(f"Failed to load model.joblib: {exc}") from exc
     return _model
 
@@ -94,7 +83,6 @@ def _positive_class_index(model, metadata: dict) -> int:
     positive_label = metadata.get("positive_class_label", 1)
     if positive_label in classes:
         return classes.index(positive_label)
-    # Fall back to the highest class value, which is the conventional "1"/positive slot.
     return int(len(classes) - 1)
 
 
@@ -102,7 +90,13 @@ def _feature_row_from_dict(features: dict, expected_columns: list[str]) -> pd.Da
     row = {}
     missing = []
     for col in expected_columns:
+        # Check alias if needed
         value = features.get(col)
+        if value is None and col == "zip_code" and "zipcode" in features:
+            value = features["zipcode"]
+        elif value is None and col == "zipcode" and "zip_code" in features:
+            value = features["zip_code"]
+        
         if value is None:
             missing.append(col)
         row[col] = value
@@ -112,7 +106,7 @@ def _feature_row_from_dict(features: dict, expected_columns: list[str]) -> pd.Da
 
 
 def predict_zip(zip_code: str) -> dict:
-    """Run inference for a single ZIP.
+    """Run inference for a single ZIP to forecast next week's elevated risk.
 
     Returns {"risk_score": float 0-100, "risk_level": str}.
     Raises data_service.ZipNotFoundError if the ZIP has no feature row,
@@ -124,7 +118,7 @@ def predict_zip(zip_code: str) -> dict:
     if not expected_columns:
         raise ModelServiceError("model_metadata.json is missing 'feature_columns'")
 
-    features = data_service.get_latest_features(zip_code)  # may raise ZipNotFoundError
+    features = data_service.get_latest_features(zip_code)
     X = _feature_row_from_dict(features, expected_columns)
 
     proba = model.predict_proba(X)[0]
@@ -136,8 +130,7 @@ def predict_zip(zip_code: str) -> dict:
 def predict_all() -> list[dict]:
     """Run batch inference for every ZIP, for the /forecasts (map) endpoint.
 
-    Uses a single predict_proba() call across all rows rather than looping
-    per-ZIP, per the plan's performance note. Never calls Gemini.
+    Uses a single predict_proba() call across all rows rather than looping per-ZIP.
     """
     model = _load_model()
     metadata = _load_metadata()
@@ -145,7 +138,11 @@ def predict_all() -> list[dict]:
     if not expected_columns:
         raise ModelServiceError("model_metadata.json is missing 'feature_columns'")
 
-    latest = data_service._load_latest_features()  # cached bulk dataframe, all ZIPs
+    latest = data_service._load_latest_features()
+    # Normalize zip columns if necessary
+    if "zip_code" in expected_columns and "zip_code" not in latest.columns:
+        latest["zip_code"] = latest["zipcode"]
+
     missing_cols = [c for c in expected_columns if c not in latest.columns]
     if missing_cols:
         raise ModelServiceError(f"latest_features.csv is missing columns the model needs: {missing_cols}")
@@ -157,5 +154,5 @@ def predict_all() -> list[dict]:
     results = []
     for zip_code, p in zip(latest["zip_code"], proba[:, pos_idx]):
         score = round(float(p) * 100, 1)
-        results.append({"zip_code": zip_code, "risk_score": score, "risk_level": get_risk_level(score)})
+        results.append({"zip_code": str(zip_code).zfill(5), "risk_score": score, "risk_level": get_risk_level(score)})
     return results
