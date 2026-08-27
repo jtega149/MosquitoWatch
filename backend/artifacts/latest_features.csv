@@ -1,0 +1,6 @@
+zip_code,borough,week_of_year,avg_temp_prev_7d,rainfall_prev_7d,positives_prev_week,positives_prev_2_weeks,positives_prev_4_weeks
+10310,Staten Island,32,79.8,1.17,7,13,20
+10302,Staten Island,32,77.5,0.32,12,23,39
+11385,Queens,32,81.2,0.57,7,14,22
+11201,Brooklyn,32,83.7,1.09,10,21,37
+10457,Bronx,32,85.8,1.75,7,14,24
