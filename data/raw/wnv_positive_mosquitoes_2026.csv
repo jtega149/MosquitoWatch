@@ -1,0 +1,194 @@
+ZIP Code,Borough,Detection Type,All Positive Trap Date(s),Neighborhood(s)
+00083,Manhattan,Detected in the past 2 weeks,"7/23, 7/30, 8/7, 8/14",Central Park
+10001,Manhattan,Not detected,,
+10002,Manhattan,Detected in the past 2 weeks,"7/30, 8/6, 8/15","Little Italy, Chinatown, Sara D. Roosevelt Park"
+10003,Manhattan,Not detected,,
+10004,Manhattan,Not detected,,
+10005,Manhattan,Not detected,,
+10006,Manhattan,Detected in the past 2 weeks,8/7,Financial District
+10007,Manhattan,Not detected,,
+10009,Manhattan,Not detected,,
+10010,Manhattan,Not detected,,
+10011,Manhattan,Detected in the past 2 weeks,"8/6, 8/14",Greenwich Village
+10012,Manhattan,Not detected,,
+10013,Manhattan,Not detected,,
+10014,Manhattan,Not detected,,
+10016,Manhattan,Not detected,,
+10017,Manhattan,Not detected,,
+10018,Manhattan,Not detected,,
+10019,Manhattan,Not detected,,
+10020,Manhattan,Not detected,,
+10021,Manhattan,Not detected,,
+10022,Manhattan,Not detected,,
+10023,Manhattan,Not detected,,
+10024,Manhattan,Not detected,,
+10025,Manhattan,Detected in the past 2 weeks,"7/16, 7/23, 7/30, 8/6, 8/7, 8/13",Manhattan Valley
+10026,Manhattan,Not detected,,
+10027,Manhattan,Detected in the past 2 weeks,"7/30, 8/7, 8/13",Harlem
+10028,Manhattan,Not detected,,
+10029,Manhattan,Not detected,,
+10030,Manhattan,Not detected,,
+10031,Manhattan,Detected in the past 2 weeks,8/13,Manhattanville
+10032,Manhattan,Detected in the past 2 weeks,"8/6, 8/13","Hamilton Heights, Washington Heights"
+10033,Manhattan,Detected in the past 2 weeks,8/14,Washington Heights
+10034,Manhattan,Not detected,,
+10035,Manhattan,Not detected,,
+10036,Manhattan,Not detected,,
+10037,Manhattan,Not detected,,
+10038,Manhattan,Not detected,,
+10039,Manhattan,Not detected,,
+10040,Manhattan,Not detected,,
+10044,Manhattan,Not detected,,
+10048,Manhattan,Not detected,,
+10065,Manhattan,Not detected,,
+10069,Manhattan,Not detected,,
+10075,Manhattan,Not detected,,
+10111,Manhattan,Not detected,,
+10115,Manhattan,Not detected,,
+10128,Manhattan,Not detected,,
+10280,Manhattan,Not detected,,
+10281,Manhattan,Not detected,,
+10282,Manhattan,Not detected,,
+10301,Staten Island,Detected in the past 2 weeks,"7/2, 7/10, 7/16, 7/23, 7/30, 7/31, 8/6, 8/13","Castleton Corners, Westerleigh, Silver Lake, Grymes Hill, Randall Manor"
+10302,Staten Island,Detected earlier this season,"7/16, 7/23, 8/3, 8/5","Mariners Harbor, Port Richmond"
+10303,Staten Island,Detected in the past 2 weeks,"6/25, 7/9, 7/16, 7/18, 7/23, 7/30, 8/3, 8/13","Arlington, Graniteville, Mariners Harbor"
+10304,Staten Island,Detected in the past 2 weeks,"7/20, 8/5, 8/10, 8/12","Dongan Hills, Old town/Dongan Hills"
+10305,Staten Island,Detected in the past 2 weeks,"7/6, 7/13, 7/20, 7/21, 7/27, 8/3, 8/5, 8/10, 8/12","South Beach, Old Town, Arrochar, Grasmere"
+10306,Staten Island,Detected in the past 2 weeks,"6/30, 7/6, 7/13, 7/20, 7/21, 7/27, 7/28, 8/3, 8/5, 8/10","Midland Beach, New Dorp Beach, Dongan Hills, Grant City, New Dorp, Oakwood"
+10307,Staten Island,Detected in the past 2 weeks,"6/16, 6/22, 6/29, 7/6, 7/13, 7/21, 7/22, 8/3, 8/10, 8/17","Richmond Valley, Tottenville, Butler Manor"
+10308,Staten Island,Detected earlier this season,"6/22, 6/29, 7/6, 7/7",Great Kills
+10309,Staten Island,Detected in the past 2 weeks,"6/18, 6/22, 6/29, 7/2, 7/6, 7/9, 7/16, 7/22, 7/30, 8/6, 8/13","Rossville, Pleasant Plains, Sandy Ground"
+10310,Staten Island,Detected earlier this season,"7/10, 7/16, 7/23, 7/24, 7/30, 8/6","Port Richmond, West Brighton"
+10312,Staten Island,Detected earlier this season,"6/16, 6/22, 6/25, 6/29, 7/2, 7/6, 7/9, 7/10, 7/13, 7/21, 7/22","Eltingville, Annadale, Greenridge, Arden Heights, Great Kills"
+10314,Staten Island,Detected in the past 2 weeks,"6/18, 6/23, 6/25, 6/30, 7/2, 7/6, 7/7, 7/9, 7/10, 7/13, 7/14, 7/16, 7/18, 7/20, 7/21, 7/23, 7/27, 7/28, 7/30, 8/3, 8/5, 8/6, 8/13, 8/17","Bloomfield, Greenridge, Bulls Head, Heartland Village, Willowbrook, Westerleigh, Chelsea, New Springville, Castleton Corners"
+10451,Bronx,Not detected,,
+10452,Bronx,Not detected,,
+10453,Bronx,Not detected,,
+10454,Bronx,Detected in the past 2 weeks,"8/6, 8/13",Mott Haven
+10455,Bronx,Not detected,,
+10456,Bronx,Detected in the past 2 weeks,"8/3, 8/6, 8/18",Morrisania
+10457,Bronx,Detected in the past 2 weeks,"7/27, 8/3, 8/11, 8/18","Claremont Village, East Tremont"
+10458,Bronx,Not detected,,
+10459,Bronx,Not detected,,
+10460,Bronx,Detected earlier this season,8/3,Van Nest
+10461,Bronx,Detected in the past 2 weeks,"7/27, 8/3, 8/10, 8/11, 8/17, 8/18","Morris Park, Middletown, Pelham Bay, Pelham Parkway"
+10462,Bronx,Detected in the past 2 weeks,"8/11, 8/18",Pelham Parkway
+10463,Bronx,Not detected,,
+10464,Bronx,Detected in the past 2 weeks,"7/7, 7/13, 7/20, 7/28, 8/4, 8/10, 8/17",Co-op City
+10465,Bronx,Detected in the past 2 weeks,"7/7, 7/14, 7/20, 7/28, 8/4, 8/10, 8/11, 8/18","Spencer Estates, Throgs Neck, Schuylerville"
+10466,Bronx,Not detected,,
+10467,Bronx,Detected in the past 2 weeks,"7/14, 7/21, 7/28, 8/4, 8/10, 8/17","Woodlawn, Norwood"
+10468,Bronx,Not detected,,
+10469,Bronx,Detected in the past 2 weeks,"7/28, 8/3, 8/10, 8/17",Baychester
+10470,Bronx,Not detected,,
+10471,Bronx,Detected in the past 2 weeks,"7/7, 8/3, 8/4, 8/10, 8/17","North Riverdale, Fieldston"
+10472,Bronx,Not detected,,
+10473,Bronx,Detected in the past 2 weeks,"7/14, 7/21, 7/28, 8/4, 8/11, 8/18","Clason Point, Harding Park, Castle Hill, Soundview"
+10474,Bronx,Detected in the past 2 weeks,"7/30, 8/7, 8/14",Hunts Point
+10475,Bronx,Detected in the past 2 weeks,"8/3, 8/11",Co-op City
+11001,Queens,Not detected,,
+11004,Queens,Detected earlier this season,7/20,Floral Park
+11005,Queens,Detected earlier this season,"7/13, 7/20",Little Neck
+11040,Queens,Not detected,,
+11096,Queens,Not detected,,
+11101,Queens,Detected in the past 2 weeks,"7/10, 7/18, 7/24, 7/25, 8/1, 8/7, 8/14","Blissville, Dutch Kills"
+11102,Queens,Not detected,,
+11103,Queens,Not detected,,
+11104,Queens,Not detected,,
+11105,Queens,Detected in the past 2 weeks,"7/31, 8/8, 8/13",Steinway
+11106,Queens,Not detected,,
+11109,Queens,Not detected,,
+11201,Brooklyn,Not detected,,
+11203,Brooklyn,Detected in the past 2 weeks,"7/31, 8/13",Prospect Lefferts Gardens
+11204,Brooklyn,Detected earlier this season,"7/23, 7/30, 8/6",Bensonhurst
+11205,Brooklyn,Not detected,,
+11206,Brooklyn,Detected in the past 2 weeks,"7/28, 8/4, 8/11, 8/18",East Williamsburg
+11207,Brooklyn,Detected in the past 2 weeks,"7/28, 8/4, 8/11, 8/18","New Lots, Broadway Junction"
+11208,Brooklyn,Detected in the past 2 weeks,"7/24, 7/30, 8/6, 8/11, 8/13","Spring Creek, Cypress Hills"
+11209,Brooklyn,Detected earlier this season,"7/23, 8/6",Bay Ridge
+11210,Brooklyn,Not detected,,
+11211,Brooklyn,Not detected,,
+11212,Brooklyn,Detected in the past 2 weeks,8/11,Brownsville
+11213,Brooklyn,Not detected,,
+11214,Brooklyn,Detected in the past 2 weeks,"7/16, 7/18, 7/23, 7/24, 7/30, 7/31, 8/6, 8/7, 8/14","Bath Beach, Bensonhurst"
+11215,Brooklyn,Detected in the past 2 weeks,"7/9, 7/16, 7/17, 7/23, 7/24, 7/31, 8/7, 8/8, 8/13","Gowanus, Windsor Terrace"
+11216,Brooklyn,Not detected,,
+11217,Brooklyn,Not detected,,
+11218,Brooklyn,Not detected,,
+11219,Brooklyn,Detected in the past 2 weeks,"7/18, 7/23, 7/24, 7/30, 7/31, 8/7, 8/13","Dyker Heights, Kensington"
+11220,Brooklyn,Detected in the past 2 weeks,"7/24, 7/31, 8/7, 8/13",Sunset Park
+11221,Brooklyn,Detected in the past 2 weeks,"8/4, 8/11, 8/18","Bedford Stuyvesant, Bushwick"
+11222,Brooklyn,Detected earlier this season,"7/25, 8/1",Greenpoint
+11223,Brooklyn,Detected earlier this season,"7/17, 7/23, 7/30, 8/6",Gravesend
+11224,Brooklyn,Not detected,,
+11225,Brooklyn,Not detected,,
+11226,Brooklyn,Not detected,,
+11228,Brooklyn,Detected in the past 2 weeks,"7/10, 7/17, 7/24, 7/30, 8/7, 8/14",Dyker Heights
+11229,Brooklyn,Detected in the past 2 weeks,"7/2, 7/9, 7/10, 7/23, 7/24, 7/30, 8/6, 8/7, 8/14","Homecrest, Marine Park"
+11230,Brooklyn,Not detected,,
+11231,Brooklyn,Not detected,,
+11232,Brooklyn,Detected in the past 2 weeks,"7/2, 7/17, 7/24, 7/31, 8/8, 8/13","Greenwood Heights, Greenwood Cemetery"
+11233,Brooklyn,Not detected,,
+11234,Brooklyn,Detected in the past 2 weeks,"7/2, 7/9, 7/16, 7/17, 7/23, 7/24, 7/30, 7/31, 8/6, 8/7, 8/13, 8/14","Bergen Beach, Marine Park, Flatlands, Mill Basin"
+11235,Brooklyn,Detected in the past 2 weeks,"7/9, 7/17, 7/23, 7/30, 8/7","Sheeps Head Bay, Brighton Beach"
+11236,Brooklyn,Detected in the past 2 weeks,"7/14, 7/21, 7/28, 8/4, 8/11, 8/17","Starrett City, Canarsie, Remsen Village"
+11237,Brooklyn,Detected in the past 2 weeks,"8/4, 8/11, 8/18",East Williamsburg
+11238,Brooklyn,Detected in the past 2 weeks,"7/18, 7/23, 7/31, 8/7, 8/13",Prospect Heights
+11239,Brooklyn,Not detected,,
+11249,Brooklyn,Not detected,,
+11251,Brooklyn,Not detected,,
+11354,Queens,Detected earlier this season,"7/14, 7/21","Flushing, College Point"
+11355,Queens,Detected earlier this season,"7/14, 7/21, 7/27, 7/29","Queensboro Hill, Downtown Flushing, Murray Hills"
+11356,Queens,Detected in the past 2 weeks,"7/6, 7/10, 7/14, 7/16, 7/21, 7/23, 7/28, 7/29, 7/31, 8/3, 8/10, 8/17","College Point, Malba"
+11357,Queens,Detected earlier this season,"7/14, 7/16, 7/21, 7/29, 7/31","Beechhurst, Whitestone, Malba"
+11358,Queens,Detected earlier this season,"7/6, 7/14, 7/21",Auburndale
+11359,Queens,Not detected,,
+11360,Queens,Detected in the past 2 weeks,"6/30, 7/6, 7/14, 7/21, 7/28, 8/3, 8/10, 8/17",Bay Terrace
+11361,Queens,Detected in the past 2 weeks,"7/6, 7/13, 7/14, 7/20, 7/21, 8/5, 8/7",Bayside
+11362,Queens,Detected in the past 2 weeks,"7/6, 7/13, 7/20, 7/28, 8/4, 8/5, 8/7, 8/10, 8/17",Douglaston
+11363,Queens,Detected earlier this season,"7/13, 7/20",Douglas Manor
+11364,Queens,Detected earlier this season,"7/2, 7/9, 7/15, 7/20, 7/21",Oakland Gardens
+11365,Queens,Detected in the past 2 weeks,"7/2, 7/6, 7/9, 7/14, 7/15, 7/21, 7/27, 8/3, 8/10, 8/17","Fresh Meadows, Pomonok, Auburndale"
+11366,Queens,Not detected,,
+11367,Queens,Detected earlier this season,"7/14, 7/21, 7/27","Kew Gardens Hills, Queensboro Hill"
+11368,Queens,Detected in the past 2 weeks,"6/16, 7/6, 7/14, 7/21, 7/27, 8/3, 8/10, 8/17","Queensboro Hill, Corona"
+11369,Queens,Not detected,,
+11370,Queens,Detected in the past 2 weeks,"8/8, 8/13",Astoria Heights
+11371,Queens,Not detected,,
+11372,Queens,Not detected,,
+11373,Queens,Not detected,,
+11374,Queens,Detected earlier this season,"7/9, 7/18, 7/25, 8/1",Rego Park
+11375,Queens,Detected earlier this season,"7/16, 7/23, 7/30",Forest Hills Gardens
+11377,Queens,Detected in the past 2 weeks,"7/18, 7/24, 7/25, 7/30, 8/1, 8/7, 8/13","Maspeth, Astoria Heights, Sunnyside Gardens"
+11378,Queens,Detected in the past 2 weeks,"7/9, 7/17, 7/25, 7/31, 8/12, 8/14",Maspeth
+11379,Queens,Detected in the past 2 weeks,"7/2, 7/9, 7/18, 7/24, 7/25, 7/31, 8/1, 8/7, 8/12, 8/14",Middle Village
+11385,Queens,Detected earlier this season,"7/16, 7/23, 7/30",Glendale
+11411,Queens,Not detected,,
+11412,Queens,Not detected,,
+11413,Queens,Detected in the past 2 weeks,"7/14, 7/20, 7/27, 7/28, 8/4, 8/10, 8/11, 8/17","Brookville, Laurelton"
+11414,Queens,Detected in the past 2 weeks,"7/16, 7/23, 7/30, 8/6, 8/13",Howard Beach
+11415,Queens,Detected in the past 2 weeks,"7/2, 7/10, 7/16, 7/23, 7/31, 8/6, 8/12",kew Gardens
+11416,Queens,Not detected,,
+11417,Queens,Detected in the past 2 weeks,"7/24, 7/31, 8/6, 8/13",Ozone Park
+11418,Queens,Detected earlier this season,"7/16, 7/23, 7/30",kew Gardens
+11419,Queens,Not detected,,
+11420,Queens,Detected in the past 2 weeks,"7/24, 7/31, 8/4, 8/6, 8/10, 8/13","Ozone Park, South Ozone Park"
+11421,Queens,Detected in the past 2 weeks,"7/9, 7/16, 7/23, 7/30, 7/31, 8/6, 8/14",Woodhaven
+11422,Queens,Detected in the past 2 weeks,"7/7, 7/13, 7/20, 7/27, 7/28, 8/4, 8/10, 8/11, 8/17, 8/18","Laurelton, Rosedale"
+11423,Queens,Detected in the past 2 weeks,"6/18, 6/25, 7/2, 7/9, 7/15, 7/21, 7/28, 8/4, 8/10, 8/17",Holliswood
+11426,Queens,Detected in the past 2 weeks,"6/22, 7/6, 7/15, 7/20, 7/27, 8/4, 8/17","Glen Oaks, Bellaire"
+11427,Queens,Detected earlier this season,8/5,Holliswood
+11428,Queens,Not detected,,
+11429,Queens,Not detected,,
+11430,Queens,Not detected,,
+11432,Queens,Detected earlier this season,"7/16, 7/23, 7/30",Jamaica Hills
+11433,Queens,Detected in the past 2 weeks,"7/20, 7/27, 8/4, 8/10, 8/17",South Jamaica
+11434,Queens,Detected in the past 2 weeks,"7/7, 7/13, 7/14, 7/20, 7/27, 7/28, 8/3, 8/4, 8/10, 8/11, 8/17, 8/19",Rochdale
+11435,Queens,Detected earlier this season,"7/16, 7/30, 8/6",Briarwood
+11436,Queens,Detected in the past 2 weeks,"7/13, 7/20, 7/28, 8/4, 8/10, 8/17",Rochdale
+11451,Queens,Not detected,,
+11691,Queens,Detected in the past 2 weeks,"7/27, 8/3, 8/10, 8/18","Far Rockaway, Edgemere"
+11692,Queens,Detected in the past 2 weeks,"8/12, 8/18",Somerville
+11693,Queens,Not detected,,
+11694,Queens,Not detected,,
+11697,Queens,Not detected,,
