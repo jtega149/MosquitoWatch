@@ -1,0 +1,22 @@
+{
+  "model_type": "LogisticRegression",
+  "feature_columns": [
+    "week_of_year",
+    "avg_temp_prev_7d",
+    "rainfall_prev_7d",
+    "positives_prev_week",
+    "positives_prev_2_weeks",
+    "positives_prev_4_weeks",
+    "zip_code",
+    "borough"
+  ],
+  "positive_class_label": 1,
+  "target": "positive_next_week",
+  "trained_on": "synthetic placeholder data - replace with the real model.joblib from the ML teammate",
+  "risk_thresholds": {
+    "Low": "<25",
+    "Moderate": "25-49",
+    "Elevated": "50-74",
+    "High": ">=75"
+  }
+}
