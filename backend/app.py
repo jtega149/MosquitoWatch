@@ -107,7 +107,16 @@ def predict(request: PredictionRequest) -> PredictionResponse:
         next_7_days=[
             ForecastDay(**day)
             for day in data_service.next_7_days(
-                forecast_year, forecast_week, risk_score, risk_level
+                forecast_year,
+                forecast_week,
+                risk_score,
+                risk_level,
+                zip_code=request.zip_code,
+                lat=float(features.get("latitude", 40.75)),
+                lon=float(features.get("longitude", -73.98)),
+                temp_mean=float(features.get("temp_mean", 24.0)),
+                humidity_mean=float(features.get("humidity_mean", 70.0)),
+                precip_sum=float(features.get("precip_sum", 20.0)),
             )
         ],
         explanation=gemini_service.FALLBACK_EXPLANATION,

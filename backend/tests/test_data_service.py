@@ -83,7 +83,8 @@ def test_seasonality_label_peak_and_off_season():
 
 
 def test_next_7_days_covers_iso_week():
-    days = data_service.next_7_days(2026, 34, 33.0, "Moderate")
+    days = data_service.next_7_days(2026, 34, 33.0, "Moderate", zip_code="10310")
     assert len(days) == 7
     assert days[0]["date"] <= days[-1]["date"]
-    assert all(day["risk_score"] == 33.0 for day in days)
+    assert all(0.0 <= day["risk_score"] <= 100.0 for day in days)
+    assert all(day["risk_level"] in {"Low", "Moderate", "Elevated", "High"} for day in days)

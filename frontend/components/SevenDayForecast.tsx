@@ -14,10 +14,10 @@ export function SevenDayForecast({
   return (
     <div>
       <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-        Next 7 days · WNV mosquito activity
+        Next 7 days · Daily Mosquito Activity Forecast
       </div>
       <p className="mt-1 text-[11px] text-slate-500">
-        One weekly model score applied across the forecast week (not seven daily models).
+        Daily percentage chance of elevated mosquito activity modeled from surveillance signals and 7-day weather conditions.
       </p>
       <ul className="mt-3 space-y-1.5">
         {days.map((day) => {
