@@ -333,7 +333,15 @@ def main():
     # Save model.joblib to both ml/artifacts/ and backend/artifacts/
     joblib.dump(best_pipeline, os.path.join(ML_ARTIFACTS_DIR, 'model.joblib'))
     joblib.dump(best_pipeline, os.path.join(BACKEND_ARTIFACTS_DIR, 'model.joblib'))
-    print(f"\n[Step 5] Exported model.joblib to backend/artifacts/ and ml/artifacts/")
+
+    # Export native XGBoost model (JSON and Universal Binary JSON) + separate preprocessing pipeline
+    best_pipeline.named_steps['clf'].save_model(os.path.join(ML_ARTIFACTS_DIR, 'xgboost_model.json'))
+    best_pipeline.named_steps['clf'].save_model(os.path.join(BACKEND_ARTIFACTS_DIR, 'xgboost_model.json'))
+    best_pipeline.named_steps['clf'].save_model(os.path.join(ML_ARTIFACTS_DIR, 'xgboost_model.ubj'))
+    best_pipeline.named_steps['clf'].save_model(os.path.join(BACKEND_ARTIFACTS_DIR, 'xgboost_model.ubj'))
+    joblib.dump(best_pipeline.named_steps['prep'], os.path.join(ML_ARTIFACTS_DIR, 'preprocessing_pipeline.joblib'))
+    joblib.dump(best_pipeline.named_steps['prep'], os.path.join(BACKEND_ARTIFACTS_DIR, 'preprocessing_pipeline.joblib'))
+    print(f"\n[Step 5] Exported model.joblib, xgboost_model.json/ubj, and preprocessing_pipeline.joblib to backend/artifacts/ and ml/artifacts/")
 
     # Export latest_features.csv (Week 33 features used to forecast Week 34)
     # Include both 'zip_code' and 'zipcode' plus all features
