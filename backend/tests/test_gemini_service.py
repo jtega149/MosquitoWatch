@@ -13,7 +13,7 @@ EXPLANATION_ARGS = {
     "positive_prev_4_weeks": 7,
     "temperature": 83.0,
     "rainfall": 1.42,
-    "seasonality": "Peak",
+    "seasonality": None,
 }
 
 
@@ -49,6 +49,7 @@ def test_success_returns_trimmed_text_and_sends_guardrails(monkeypatch) -> None:
     assert "Do not invent measurements, causes, or facts." in prompt
     assert "Only explain the supplied information." in prompt
     assert "recorded West Nile-positive mosquito detections" in prompt
+    assert "Seasonality:" not in prompt
     client.close.assert_called_once()
 
 

@@ -14,11 +14,13 @@ import os
 
 import joblib
 import pandas as pd
+import xgboost as xgb
 
 import data_service
 
 ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "artifacts")
-MODEL_PATH = os.path.join(ARTIFACTS_DIR, "model.joblib")
+PREPROCESSOR_PATH = os.path.join(ARTIFACTS_DIR, "preprocessing_pipeline.joblib")
+XGBOOST_MODEL_PATH = os.path.join(ARTIFACTS_DIR, "xgboost_model.json")
 METADATA_PATH = os.path.join(ARTIFACTS_DIR, "model_metadata.json")
 
 # Score -> risk label. Upper bound is exclusive.
@@ -29,7 +31,8 @@ RISK_THRESHOLDS = [
     (101, "High"),
 ]
 
-_model = None
+_preprocessor = None
+_model: xgb.XGBClassifier | None = None
 _model_metadata: dict | None = None
 
 
@@ -37,18 +40,39 @@ class ModelServiceError(Exception):
     """Raised for any model-loading or inference problem."""
 
 
-def _load_model():
-    """Load model.joblib once and cache it at module scope."""
-    global _model
-    if _model is None:
-        if not os.path.exists(MODEL_PATH):
+def _load_preprocessor():
+    """Load the fitted sklearn preprocessor once and cache it."""
+    global _preprocessor
+    if _preprocessor is None:
+        if not os.path.exists(PREPROCESSOR_PATH):
             raise ModelServiceError(
-                f"Model file not found: {MODEL_PATH}. Run train_models.py to export production artifacts."
+                f"Preprocessing artifact not found: {PREPROCESSOR_PATH}"
             )
         try:
-            _model = joblib.load(MODEL_PATH)
+            _preprocessor = joblib.load(PREPROCESSOR_PATH)
         except Exception as exc:
-            raise ModelServiceError(f"Failed to load model.joblib: {exc}") from exc
+            raise ModelServiceError(
+                f"Failed to load preprocessing_pipeline.joblib: {exc}"
+            ) from exc
+    return _preprocessor
+
+
+def _load_model() -> xgb.XGBClassifier:
+    """Load the portable XGBoost classifier once and cache it."""
+    global _model
+    if _model is None:
+        if not os.path.exists(XGBOOST_MODEL_PATH):
+            raise ModelServiceError(
+                f"XGBoost model artifact not found: {XGBOOST_MODEL_PATH}"
+            )
+        try:
+            model = xgb.XGBClassifier()
+            model.load_model(XGBOOST_MODEL_PATH)
+            _model = model
+        except Exception as exc:
+            raise ModelServiceError(
+                f"Failed to load xgboost_model.json: {exc}"
+            ) from exc
     return _model
 
 
@@ -63,8 +87,9 @@ def _load_metadata() -> dict:
 
 
 def reload_model() -> None:
-    """Force the model and metadata to be reloaded from disk on next use."""
-    global _model, _model_metadata
+    """Force preprocessing, model, and metadata reloads on next use."""
+    global _preprocessor, _model, _model_metadata
+    _preprocessor = None
     _model = None
     _model_metadata = None
 
@@ -112,6 +137,7 @@ def predict_zip(zip_code: str) -> dict:
     Raises data_service.ZipNotFoundError if the ZIP has no feature row,
     or ModelServiceError if the model/metadata can't be loaded or used.
     """
+    preprocessor = _load_preprocessor()
     model = _load_model()
     metadata = _load_metadata()
     expected_columns = metadata.get("feature_columns")
@@ -121,7 +147,14 @@ def predict_zip(zip_code: str) -> dict:
     features = data_service.get_latest_features(zip_code)
     X = _feature_row_from_dict(features, expected_columns)
 
-    proba = model.predict_proba(X)[0]
+    try:
+        transformed = preprocessor.transform(X)
+    except Exception as exc:
+        raise ModelServiceError(f"Failed to transform feature row: {exc}") from exc
+    try:
+        proba = model.predict_proba(transformed)[0]
+    except Exception as exc:
+        raise ModelServiceError(f"Failed to generate prediction: {exc}") from exc
     pos_idx = _positive_class_index(model, metadata)
     score = round(float(proba[pos_idx]) * 100, 1)
     return {"risk_score": score, "risk_level": get_risk_level(score)}
@@ -132,6 +165,7 @@ def predict_all() -> list[dict]:
 
     Uses a single predict_proba() call across all rows rather than looping per-ZIP.
     """
+    preprocessor = _load_preprocessor()
     model = _load_model()
     metadata = _load_metadata()
     expected_columns = metadata.get("feature_columns")
@@ -148,7 +182,14 @@ def predict_all() -> list[dict]:
         raise ModelServiceError(f"latest_features.csv is missing columns the model needs: {missing_cols}")
 
     X = latest[expected_columns]
-    proba = model.predict_proba(X)
+    try:
+        transformed = preprocessor.transform(X)
+    except Exception as exc:
+        raise ModelServiceError(f"Failed to transform feature rows: {exc}") from exc
+    try:
+        proba = model.predict_proba(transformed)
+    except Exception as exc:
+        raise ModelServiceError(f"Failed to generate predictions: {exc}") from exc
     pos_idx = _positive_class_index(model, metadata)
 
     results = []
