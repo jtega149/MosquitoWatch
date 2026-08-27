@@ -10,7 +10,7 @@ import {
   Map,
   Search,
 } from "lucide-react";
-import { DATA_UPDATED } from "@/lib/mock-data";
+import { useForecastData } from "@/lib/forecast-context";
 
 const NAV = [
   { href: "/", label: "Map Overview", icon: Map },
@@ -23,6 +23,7 @@ const NAV = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { forecastRange, status } = useForecastData();
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-white/8 bg-[#0c1220]">
@@ -48,7 +49,10 @@ export function Sidebar() {
 
       <div className="border-t border-white/8 p-4 text-[11px] leading-relaxed text-slate-500">
         <div>
-          Data updated: <span className="text-slate-300">{DATA_UPDATED}</span>
+          Forecast window:{" "}
+          <span className="text-slate-300">
+            {status === "ready" ? forecastRange : status === "error" ? "API offline" : "Loading…"}
+          </span>
         </div>
         <div className="mt-2">© 2026 MosquitoWatch NYC</div>
       </div>

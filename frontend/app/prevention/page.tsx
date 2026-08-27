@@ -15,7 +15,7 @@ export default function PreventionPage() {
       <h1 className="text-2xl font-semibold text-white">Prevention Tips</h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-400">
         Practical steps residents can take during mosquito season. These tips are general public-health
-        guidance, not a substitute for NYC Health advisories.
+        guidance from the dashboard, not an API response, and not a substitute for NYC Health advisories.
       </p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {PREVENTION_TIPS.map((tip) => {

@@ -46,8 +46,9 @@ export default function AboutPage() {
             </p>
             <p className="mt-3 text-sm leading-relaxed text-slate-400">
               The product predicts mosquito / surveillance activity — not individual human infection
-              risk. Forecast scores on this demo are mock values shaped like the 2026 training table
-              (Staten Island higher, Manhattan lower) until the ML API is wired in.
+              risk. Map colors come from <code className="text-slate-300">GET /forecasts</code>. ZIP
+              detail and Gemini copy come from <code className="text-slate-300">POST /predict</code>.
+              Detection charts come from <code className="text-slate-300">{`GET /trends/{zip}`}</code>.
             </p>
           </div>
         </div>

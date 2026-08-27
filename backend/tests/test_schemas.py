@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from schemas import Indicators, PredictionRequest, PredictionResponse
+from schemas import ForecastDay, Indicators, PredictionRequest, PredictionResponse
 
 
 def make_prediction_response(risk_score: float = 76.0) -> PredictionResponse:
@@ -10,6 +10,7 @@ def make_prediction_response(risk_score: float = 76.0) -> PredictionResponse:
         borough="Staten Island",
         areas="Port Richmond / West Brighton",
         forecast_week=32,
+        forecast_year=2026,
         risk_score=risk_score,
         risk_level="High",
         indicators=Indicators(
@@ -18,8 +19,11 @@ def make_prediction_response(risk_score: float = 76.0) -> PredictionResponse:
             positive_prev_4_weeks=7,
             temperature=83.0,
             rainfall=1.42,
-            seasonality=None,
+            seasonality="Peak mosquito season (Jun–Sep)",
         ),
+        next_7_days=[
+            ForecastDay(date="2026-08-03", risk_score=risk_score, risk_level="High")
+        ],
         explanation="Mock explanation.",
     )
 
@@ -30,7 +34,8 @@ def test_prediction_contract_accepts_valid_values() -> None:
 
     assert request.model_dump() == {"zip_code": "10310"}
     assert response.risk_score == 76.0
-    assert response.indicators.seasonality is None
+    assert response.indicators.seasonality == "Peak mosquito season (Jun–Sep)"
+    assert len(response.next_7_days) == 1
     assert response.explanation == "Mock explanation."
 
 

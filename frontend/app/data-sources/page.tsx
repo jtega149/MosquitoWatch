@@ -6,8 +6,8 @@ export default function DataSourcesPage() {
     <div className="mx-auto max-w-3xl space-y-4">
       <h1 className="text-2xl font-semibold text-white">Data Sources</h1>
       <p className="text-sm text-slate-400">
-        The forecast will combine public surveillance and weather. The dashboard currently shows mock
-        scores; source links below are the real feeds we plan to use.
+        Map, ZIP lookup, and trends read live JSON from FastAPI. Source links below are the public
+        feeds used to train and feature the model.
       </p>
       {DATA_SOURCES.map((src) => (
         <article key={src.name} className="rounded-2xl border border-white/10 bg-[#131a2b] p-6">
